@@ -21,7 +21,7 @@ export default function Home() {
           session.data?.user
             ? "https://avatar.iran.liara.run/username?username=" +
               session.data.user?.name
-            : "vercel.svg"
+            : "https://avatar.iran.liara.run/public"
         }
       />
       {session.status == "authenticated" ? (
@@ -31,9 +31,9 @@ export default function Home() {
           <MenuList title="Gerência de Finanças" list={NAVLIST_financas} />
         </>
       ) : (
-        <div className="bg-slate-100 w-full rounded-lg p3 flex flex-col h-full">
-          <p>Para continuar você deve iniciar uma sessão</p>
-          <button onClick={() => signIn("keycloak")} className="bg-red-500 text-white px-4 py-2 rounded-lg">Entrar</button>
+        <div className="bg-slate-50 w-full rounded-lg p-3 flex flex-col items-center gap-5 py-6" >
+          <p className="mb-5 text-center">Para continuar você deve iniciar uma sessão</p>
+          <button onClick={() => signIn("keycloak")} className="bg-red-500 text-white px-4 py-2 rounded-lg  w-full md:w-72">Fazer login</button>
         </div>
       )}
     </div>
