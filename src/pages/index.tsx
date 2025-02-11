@@ -1,5 +1,6 @@
 import Input from "@/components/atoms/Input";
 import MenuItem, { MenuItemProps } from "@/components/atoms/MenuItem";
+import Textbox from "@/components/atoms/Textbox";
 import UserCard from "@/components/atoms/UserCard";
 import MenuList from "@/components/molecules/MenuList";
 import {
