@@ -1,3 +1,4 @@
+import Input from "@/components/atoms/Input";
 import MenuItem, { MenuItemProps } from "@/components/atoms/MenuItem";
 import UserCard from "@/components/atoms/UserCard";
 import MenuList from "@/components/molecules/MenuList";
@@ -28,6 +29,7 @@ export default function Home() {
       />
       {session.status == "authenticated" ? (
         <>
+          <Input />
           <MenuList title="Gerência de usuários" list={NAVLIST_usuarios} />
           <MenuList title="Gerência de treinos" list={NAVLIST_treinos} />
           <MenuList title="Gerência de Finanças" list={NAVLIST_financas} />
