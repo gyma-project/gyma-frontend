@@ -1,3 +1,4 @@
+import Input from "@/components/atoms/Input";
 import MenuItem, { MenuItemProps } from "@/components/atoms/MenuItem";
 import UserCard from "@/components/atoms/UserCard";
 import MenuList from "@/components/molecules/MenuList";
