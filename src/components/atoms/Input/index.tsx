@@ -3,7 +3,7 @@ import { Dispatch, InputHTMLAttributes, SetStateAction } from "react";
 interface InputProps{
     label: string;
     width?: string;
-    otherInputProps: any;
+    otherInputProps?: any;
 }
 
 export default function Input({label, width, otherInputProps}: InputProps){
