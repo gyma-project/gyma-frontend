@@ -1,3 +1,4 @@
+import ImageField from "@/components/atoms/ImageField";
 import Input from "@/components/atoms/Input";
 import MenuItem, { MenuItemProps } from "@/components/atoms/MenuItem";
 import Textbox from "@/components/atoms/Textbox";
@@ -30,6 +31,7 @@ export default function Home() {
       />
       {session.status == "authenticated" ? (
         <>
+          <ImageField/>
           <MenuList title="Gerência de usuários" list={NAVLIST_usuarios} />
           <MenuList title="Gerência de treinos" list={NAVLIST_treinos} />
           <MenuList title="Gerência de Finanças" list={NAVLIST_financas} />
