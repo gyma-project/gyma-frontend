@@ -32,7 +32,6 @@ export default function Home() {
       />
       {session.status == "authenticated" ? (
         <>
-          <FloatingMenu />
           <MenuList title="Gerência de usuários" list={NAVLIST_usuarios} />
           <MenuList title="Gerência de treinos" list={NAVLIST_treinos} />
           <MenuList title="Gerência de Finanças" list={NAVLIST_financas} />

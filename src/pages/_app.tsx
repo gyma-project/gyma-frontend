@@ -1,4 +1,5 @@
 import BackToTop from "@/components/atoms/BackToTop";
+import FloatingMenu from "@/components/atoms/FloatingMenu";
 import Footer from "@/components/molecules/Footer";
 import Header from "@/components/molecules/Header";
 import "@/styles/globals.css";
@@ -21,6 +22,7 @@ export default function App({ Component, pageProps: { session, ...pageProps }}: 
     <SessionProvider session={session}>
       <div className="flex flex-col min-h-[100vh]">
         <Header/>
+        <FloatingMenu/>
         <main className="flex-1 p-8">
           <Component {...pageProps} />
         </main>
