@@ -2,6 +2,7 @@ import FloatingMenu from "@/components/atoms/FloatingMenu";
 import ImageField from "@/components/atoms/ImageField";
 import Input from "@/components/atoms/Input";
 import MenuItem, { MenuItemProps } from "@/components/atoms/MenuItem";
+import SearchField from "@/components/atoms/SearchField";
 import Textbox from "@/components/atoms/Textbox";
 import UserCard from "@/components/atoms/UserCard";
 import MenuList from "@/components/molecules/MenuList";
@@ -32,6 +33,7 @@ export default function Home() {
       />
       {session.status == "authenticated" ? (
         <>
+          <SearchField />
           <MenuList title="Gerência de usuários" list={NAVLIST_usuarios} />
           <MenuList title="Gerência de treinos" list={NAVLIST_treinos} />
           <MenuList title="Gerência de Finanças" list={NAVLIST_financas} />
