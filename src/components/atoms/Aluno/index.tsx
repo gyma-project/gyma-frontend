@@ -1,143 +1,48 @@
-import React, { useState } from "react";
+const students = [
+    {
+        id: 1,
+        name: 'João Silva',
+        email: 'joao.silva@email.com',
+        birthDate: '2000-05-15',
+        cpf: '123.456.789-00',
+        userType: 'Aluno',
+    },
+]
 
-export default function Aluno() {
-    const [expanded, setExpanded] = useState(false);
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
-
+export default function ListStudents() {
     return (
-        <div style={styles.card}>
-            {/* Cabeçalho do Cartão */}
-            <div style={styles.cardHeader}>
-                <div style={styles.usuario}>
-                    <div style={styles.avatar}>K</div>
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+            {students.map((student) => (
+                <div key={student.id} className="group relative p-6 border border-gray-200 rounded-lg shadow-lg bg-gray-50 flex justify-between items-center">
+<div>
+                                <div
+                                    style={{width: "40px", height: "40px",borderRadius: "50%",background: "#e74c3c",color: "#fff",display: "flex",alignItems: "center",justifyContent: "center",fontWeight: "bold",marginRight: "10px"}}
+                                >
+                                    {student.name.charAt(0)}
+                                </div>
+                            </div>
+
                     <div>
-                        <div style={styles.title}>Keilany</div>
+                        <h3 className="text-lg font-semibold text-gray-900">{student.name}</h3>
+                        <p className="text-sm text-gray-600">Email: {student.email}</p>
+                        <p className="text-sm text-gray-600">Nascimento: {student.birthDate}</p>
+                        <p className="text-sm text-gray-600">CPF: {student.cpf}</p>
+                        <p className="text-sm text-gray-600">Tipo de usuário:
+                            <p style={{
+                                backgroundColor: 'green', color: 'white', margin: "0 6px", padding: '5px 10px',
+                                display: 'inline-block', borderRadius: '5px'
+                            }}
+                            >{student.userType}</p>
+                        </p>
+                    </div>
+
+                    <div className="mt-4 flex flex-col space-y-10">
+                        <img src="/icons/lapis.png" alt="Editar" style={{ width: 18, height: 18 }} />
+                        <img src="/icons/lixeira.png" alt="Excluir" style={{ width: 18, height: 18 }} />
                     </div>
                 </div>
-                <div style={styles.editar}>
-                    <button>
-                        <img src="/icons/lapis.png" alt="Editar" style={{ width: 18, height: 18 }} />
-                    </button>
-                </div>
 
-                <button style={{
-                    ...styles.expandButton
-                }}>
-                    <img src="/icons/lixeira.png" alt="Excluir" style={{ width: 18, height: 18 }} />
-                </button>
-            </div>
-
-            {/* Conteúdo */}
-            <div style={styles.cardContent}>
-                <p>
-                    <b>E-mail:</b>keilanygabriel@gmail.com
-                </p>
-            </div>
-
-            {/* Ações */}
-            <div style={styles.cardActions}>
-                <button
-                    style={{
-                        ...styles.expandButton,
-                        transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-                    }}
-                    onClick={handleExpandClick}>
-                    <img src="/icons/olho.png" alt="Visualizar" style={{ width: 18, height: 18 }} />
-                </button>
-            </div>
-            {/* Conteúdo Expandido */}
-            {expanded && (
-                <div style={styles.expandedContent}>
-                    <p>
-                        <b>Sobre o usuário:</b>
-                    </p><br />
-                    <p>
-                        <b>Tipo de Usuário:</b>
-                        <div style={{
-                            backgroundColor: 'green', color: 'white', margin: "0 3px", padding: '5px 10px',
-                            display: 'inline-block', borderRadius: '5px'
-                        }}>
-                            Aluno
-                        </div>
-                    </p>
-                    <p>
-                        <b>Data de Nascimento: </b>22/22/2222
-                    </p>
-                    <p>
-                        <b>CPF: </b>111.111.111-11
-                    </p>
-                </div>
-            )}
+            ))}
         </div>
-    );
+    )
 }
-
-const styles: { [key: string]: React.CSSProperties } = {
-    card: {
-        maxWidth: "345px",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        overflow: "hidden",
-        boxShadow: "0px 2px 5px rgba(0,0,0,0.2)",
-        fontFamily: "Arial, sans-serif",
-        background: "#fff",
-    },
-    cardHeader: {
-        display: "flex",
-        alignItems: "center",
-        padding: "16px",
-        borderBottom: "1px solid #eee",
-    },
-    usuario: {
-        display: "flex",
-        alignItems: "center",
-    },
-    editar: {
-        display: "flex",
-        alignItems: "center",
-        padding: "5px"
-    },
-    avatar: {
-        width: "40px",
-        height: "40px",
-        borderRadius: "50%",
-        background: "#e74c3c",
-        color: "#fff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontWeight: "bold",
-        marginRight: "10px",
-    },
-    title: {
-        fontSize: "16px",
-        fontWeight: "bold",
-    },
-    cardContent: {
-        padding: "16px",
-        fontSize: "14px",
-        color: "#333",
-    },
-    cardActions: {
-        display: "flex",
-        padding: "8px 16px",
-        borderTop: "1px solid #eee",
-    },
-    expandButton: {
-        background: "none",
-        border: "none",
-        fontSize: "20px",
-        cursor: "pointer",
-        marginLeft: "auto",
-        transition: "transform 0.3s",
-    },
-    expandedContent: {
-        padding: "16px",
-        background: "#f9f9f9",
-        fontSize: "14px",
-        borderTop: "1px solid #eee",
-    },
-};
