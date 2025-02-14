@@ -22,7 +22,9 @@ export default function Home() {
     <div className="flex flex-col gap-5">
       <UserCard
         userName={
-          session.data?.user ? (session.data.user?.name as string) : "Bem vindo ao GYMA!"
+          session.data?.user
+            ? (session.data.user?.name as string)
+            : "Bem vindo ao GYMA!"
         }
         userImage={
           session.data?.user
@@ -38,9 +40,16 @@ export default function Home() {
           <MenuList title="Gerência de Finanças" list={NAVLIST_financas} />
         </>
       ) : (
-        <div className="bg-slate-50 w-full rounded-lg p-3 flex flex-col items-center gap-5 py-6" >
-          <p className="mb-5 text-center">Para continuar você deve iniciar uma sessão</p>
-          <button onClick={() => signIn("keycloak")} className="bg-red-500 text-white px-4 py-2 rounded-lg  w-full md:w-72">Fazer login</button>
+        <div className="bg-slate-50 w-full rounded-lg p-3 flex flex-col items-center gap-5 py-6">
+          <p className="mb-5 text-center">
+            Para continuar você deve iniciar uma sessão
+          </p>
+          <button
+            onClick={() => signIn("keycloak")}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg  w-full md:w-72"
+          >
+            Fazer login
+          </button>
         </div>
       )}
     </div>

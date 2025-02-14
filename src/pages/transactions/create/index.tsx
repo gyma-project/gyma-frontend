@@ -1,3 +1,4 @@
+import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import PageTitle from "@/components/atoms/PageTitle";
 import Textbox from "@/components/atoms/Textbox";
@@ -15,7 +16,12 @@ export default function TransactionsCreate() {
           label="Tipo"
           otherInputProps={{ placeholder: "Digite o tipo da transação" }}
         />
-        <Textbox height="60px" label="Descrição" otherTextboxProps={{placeholder: "Digite uma descrição..."}} />
+        <Textbox
+          height="60px"
+          label="Descrição"
+          otherTextboxProps={{ placeholder: "Digite uma descrição..." }}
+        />
+        <Button />
       </div>
     </div>
   );
