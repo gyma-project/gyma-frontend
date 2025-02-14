@@ -1,17 +1,16 @@
-import { Dispatch, InputHTMLAttributes, SetStateAction } from "react";
+import { Dispatch, TextareaHTMLAttributes, SetStateAction } from "react";
 
-interface TextboxProps {
+interface TextboxProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   width?: string;
   height?: string;
-  otherTextboxProps?: any;
 }
 
 export default function Textbox({
   label,
   width,
   height,
-  otherTextboxProps,
+  ...otherTextboxProps
 }: TextboxProps) {
   return (
     <div>
