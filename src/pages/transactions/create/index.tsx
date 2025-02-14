@@ -21,7 +21,7 @@ export default function TransactionsCreate() {
           label="Descrição"
           otherTextboxProps={{ placeholder: "Digite uma descrição..." }}
         />
-        <Button />
+        <Button>Cadastrar</Button>
       </div>
     </div>
   );

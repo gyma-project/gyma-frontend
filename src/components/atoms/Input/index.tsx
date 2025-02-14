@@ -1,12 +1,11 @@
 import { Dispatch, InputHTMLAttributes, SetStateAction } from "react";
 
-interface InputProps {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   width?: string;
-  otherInputProps?: any;
 }
 
-export default function Input({ label, width, otherInputProps }: InputProps) {
+export default function Input({ label, width, ...otherInputProps }: InputProps) {
   return (
     <div>
       <p className="mb-2">{label}:</p>
