@@ -73,8 +73,8 @@ export default function Treinos() {
 
                        {/* Botões de ação */}
                        <div className="mt-4 flex flex-col space-y-10">
-                           <img src="/icons/lapis.png" alt="Editar" style={{ width: 18, height: 18 }} />
-                           <img src="/icons/lixeira.png" alt="Excluir" style={{ width: 18, height: 18 }} />
+                           <img src="/images/icon-lapis.png" alt="Editar" style={{ width: 18, height: 18 }} />
+                           <img src="/images/icon-lixeira.png" alt="Excluir" style={{ width: 18, height: 18 }} />
                        </div>
                       
                    </div>
