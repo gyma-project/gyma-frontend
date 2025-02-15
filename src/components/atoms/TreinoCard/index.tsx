@@ -23,7 +23,11 @@ export default function TreinoCard() {
     const [search, setSearch] = useState("");
 
     const treinosFiltrados = treinos.filter((treino) =>
-        treino.titulo.toLowerCase().includes(search.toLowerCase())
+        treino.titulo
+            .normalize("NFD") // Normaliza o nome do aluno
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .includes(search.toLowerCase())
     );
 
     return (

@@ -24,7 +24,10 @@ export default function Treinador() {
     const [search, setSearch] = useState('');
 
     const filteredTrainers = trainers.filter(trainer =>
-        trainer.name.toLowerCase().includes(search.toLowerCase())
+        trainer.name.normalize("NFD") // Normaliza o nome do aluno
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .includes(search.toLowerCase())
     );
 
     return (
@@ -33,7 +36,7 @@ export default function Treinador() {
 
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
                 {filteredTrainers.map((trainer) => (
-                    
+
                     <div key={trainer.id} className=" group relative p-6 border border-gray-200 bg-red-100 rounded-lg shadow-lg bg-gray-50 flex justify-between items-center">
                         <div>
                             <div

@@ -24,7 +24,11 @@ export default function Aluno() {
     const [search, setSearch] = useState('');
 
     const filteredStudents = students.filter(student =>
-        student.name.toLowerCase().includes(search.toLowerCase())
+        student.name
+        .normalize("NFD") // Normaliza o nome do aluno
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .includes(search.toLowerCase()) 
     );
 
     return (
