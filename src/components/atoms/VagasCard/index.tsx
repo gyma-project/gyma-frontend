@@ -1,25 +1,97 @@
-interface VagasCard {
+import { useState } from "react";
+
+interface VagasCardProps {
     horario: string;
     alunosAtuais: number;
     capacidadeTotal: number;
 }
 
-export default function VagasCard({ horario, alunosAtuais, capacidadeTotal }: VagasCard) {
+const horariosDisponiveis = ["08:00", "10:00", "14:00"];
+
+const vagas: VagasCardProps[] = [
+    { horario: "08:00", alunosAtuais: 5, capacidadeTotal: 10 },
+    { horario: "10:00", alunosAtuais: 7, capacidadeTotal: 10 },
+    { horario: "14:00", alunosAtuais: 3, capacidadeTotal: 8 },
+];
+
+export default function ListaVagas() {
+    const [filtroHorario, setFiltroHorario] = useState<string>("");
+
+    // Simulação de controle de acesso
+    const usuarioEhAdministrador = false;
+    const usuarioEhAluno = true;
+
+    const vagasFiltradas = filtroHorario
+        ? vagas.filter((vaga) => vaga.horario === filtroHorario)
+        : vagas;
+
     return (
-        <div className="flex justify-between items-center p-6 bg-red-50 rounded-2xl shadow-md w-full max-w-md border border-red-200">
-            <div>
-                <h2 className="text-xl font-semibold text-red-500">{horario}</h2>
-                <p className="text-md font-bold text-red-500 mt-2">
-                    Quantidade de Alunos: <span className="text-black">{alunosAtuais}/{capacidadeTotal}</span>
-                </p>
+        <div className="flex flex-col space-y-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h2 className="text-1xl tracking-tight text-gray-900 mt-2">Agendados para hoje:</h2>
+
+                    {usuarioEhAdministrador && (
+                        <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition w-full md:w-auto mt-2">
+                            Editar Horário
+                        </button>
+                    )}
+                </div>
+                <select
+                    className="border border-black rounded-md p-2 h-9 text-sm mt-2 md:mt-0"
+                    value={filtroHorario}
+                    onChange={(e) => setFiltroHorario(e.target.value)}
+                >
+                    <option value="">Todos os horários</option>
+                    {horariosDisponiveis.map((horario) => (
+                        <option key={horario} value={horario}>
+                            {horario}
+                        </option>
+                    ))}
+                </select>
             </div>
 
-            <div className="flex flex-col space-y-3 text-red-500">
-                <div className="mt-4 flex flex-col space-y-10">
-                           <img src="/images/icon-olho.png" alt="Abrir" style={{ width: 18, height: 18 }} />
-                           <img src="/images/icon-lixeira.png" alt="Excluir" style={{ width: 18, height: 18 }} />
-                </div>
+            {/* Grid de Cards Responsivo */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {vagasFiltradas.map((vaga, index) => (
+                    <VagasCard key={index} {...vaga} usuarioEhAluno={usuarioEhAluno} />
+                ))}
             </div>
+        </div>
+    );
+}
+
+interface VagasCardPropsWithAluno extends VagasCardProps {
+    usuarioEhAluno: boolean;
+}
+
+function VagasCard({ horario, alunosAtuais, capacidadeTotal, usuarioEhAluno }: VagasCardPropsWithAluno) {
+    return (
+        <div className="bg-red-50 rounded-xl shadow-md w-full border-red-400 p-3">
+                <div className="flex justify-between p-4 w-full">
+                    <div>
+                        <h2 className="text-lg font-semibold text-red-500">{horario}</h2>
+                        <p className="text-sm font-bold text-red-500 mt-1">
+                            Quantidade de Alunos:{" "}
+                            <span className="text-black">
+                                {alunosAtuais}/{capacidadeTotal}
+                            </span>
+                        </p>
+                    </div>
+
+                    <div className="flex flex-col items-center space-y-3 text-red-500">
+                        <img src="/images/icon-olho.png" alt="Abrir" className="w-5 h-5" />
+                        <img src="/images/icon-lixeira.png" alt="Excluir" className="w-5 h-5" />
+                    </div>
+
+                </div >
+
+                {usuarioEhAluno && (
+                    <button className="bg-red-500 text-white py-2 mt-2 hover:bg-red-600 rounded-xl transition w-full">
+                        Agendar
+                    </button>
+                )}
+            <br></br>
         </div>
     );
 }
