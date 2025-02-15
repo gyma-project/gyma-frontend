@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import FiltrarPorNome from '../FiltrarPorNome';
 
 const students = [
     {
@@ -28,16 +29,12 @@ export default function Aluno() {
 
     return (
         <div>
-            <input
-                type="text"
-                placeholder="Buscar aluno pelo nome..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="mb-4 p-2 border border-gray-300 rounded-lg w-full"
-            />
+            {/* Chama o componente de filtro passando o search e setSearch */}
+            <FiltrarPorNome search={search} setSearch={setSearch} />
+
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
                 {filteredStudents.map((student) => (
-                    <div key={student.id} className="group relative p-6 border border-gray-200 rounded-lg shadow-lg bg-gray-50 flex justify-between items-center">
+                    <div key={student.id} className="group relative p-6 border border-gray-200 bg-red-100  rounded-lg shadow-lg bg-gray-50 flex justify-between items-center">
                         <div>
                             <div
                                 style={{
@@ -50,7 +47,7 @@ export default function Aluno() {
                             </div>
                         </div>
 
-                        <div>
+                        <div className="max-w-[240px]">
                             <h3 className="text-lg font-semibold text-gray-900">{student.name}</h3>
                             <p className="text-sm text-gray-600">Email: {student.email}</p>
                             <p className="text-sm text-gray-600">Nascimento: {student.birthDate}</p>
@@ -65,7 +62,7 @@ export default function Aluno() {
                             </p>
                         </div>
 
-                        <div className="mt-4 flex flex-col space-y-10" style={{ marginLeft: "3px" }}>
+                        <div className="mt-4 flex flex-col space-y-5" style={{ marginLeft: "3px" }}>
                             <img src="/icons/lapis.png" alt="Editar" style={{ width: 18, height: 18 }} />
                             <img src="/icons/lixeira.png" alt="Excluir" style={{ width: 18, height: 18 }} />
                         </div>

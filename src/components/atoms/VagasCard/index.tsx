@@ -30,7 +30,7 @@ export default function ListaVagas() {
         <div className="flex flex-col space-y-4">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div>
-                    <h2 className="text-1xl tracking-tight text-gray-900 mt-2">Agendados para hoje:</h2>
+                    <h2 className="text-1xl tracking-tight text-gray-900 mt-2">Para hoje:</h2>
 
                     {usuarioEhAdministrador && (
                         <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition w-full md:w-auto mt-2">
@@ -65,7 +65,7 @@ function VagasCard({ horario, alunosAtuais, capacidadeTotal, usuarioEhAluno }: V
             <div className="flex justify-between p-4 w-full">
                 <div>
                     <h2 className="text-lg font-semibold text-red-500">{horario}</h2>
-                    <p className="text-sm font-bold text-red-500 mt-1">
+                    <p className="text-sm mt-1">
                         Quantidade de Alunos:{" "}
                         <span className="text-black">
                             {alunosAtuais}/{capacidadeTotal}
@@ -74,8 +74,8 @@ function VagasCard({ horario, alunosAtuais, capacidadeTotal, usuarioEhAluno }: V
                 </div>
 
                 <div className="flex flex-col items-center space-y-3 text-red-500">
-                    <img src="/images/icon-olho.png" alt="Abrir" className="w-5 h-5" />
-                    <img src="/images/icon-lixeira.png" alt="Excluir" className="w-5 h-5" />
+                    <img src="/icons/olho.png" alt="Visualizar" style={{ width: 18, height: 18 }} />
+                    <img src="/icons/lixeira.png" alt="Excluir" style={{ width: 18, height: 18 }} />
                 </div>
             </div>
 
