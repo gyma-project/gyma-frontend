@@ -1,4 +1,5 @@
 import { useState } from "react";
+import FiltroHorario from "../FiltroHorario";
 
 interface VagasCardProps {
     horario: string;
@@ -18,8 +19,8 @@ export default function ListaVagas() {
     const [filtroHorario, setFiltroHorario] = useState<string>("");
 
     // Simulação de controle de acesso
-    const usuarioEhAdministrador = false;
-    const usuarioEhAluno = true;
+    const usuarioEhAdministrador = true;
+    const usuarioEhAluno = false;
 
     const vagasFiltradas = filtroHorario
         ? vagas.filter((vaga) => vaga.horario === filtroHorario)
@@ -37,18 +38,11 @@ export default function ListaVagas() {
                         </button>
                     )}
                 </div>
-                <select
-                    className="border border-black rounded-md p-2 h-9 text-sm mt-2 md:mt-0"
-                    value={filtroHorario}
-                    onChange={(e) => setFiltroHorario(e.target.value)}
-                >
-                    <option value="">Todos os horários</option>
-                    {horariosDisponiveis.map((horario) => (
-                        <option key={horario} value={horario}>
-                            {horario}
-                        </option>
-                    ))}
-                </select>
+                <FiltroHorario
+                    filtroHorario={filtroHorario}
+                    setFiltroHorario={setFiltroHorario}
+                    horariosDisponiveis={horariosDisponiveis}
+                />
             </div>
 
             {/* Grid de Cards Responsivo */}
@@ -68,30 +62,28 @@ interface VagasCardPropsWithAluno extends VagasCardProps {
 function VagasCard({ horario, alunosAtuais, capacidadeTotal, usuarioEhAluno }: VagasCardPropsWithAluno) {
     return (
         <div className="bg-red-50 rounded-xl shadow-md w-full border-red-400 p-3">
-                <div className="flex justify-between p-4 w-full">
-                    <div>
-                        <h2 className="text-lg font-semibold text-red-500">{horario}</h2>
-                        <p className="text-sm font-bold text-red-500 mt-1">
-                            Quantidade de Alunos:{" "}
-                            <span className="text-black">
-                                {alunosAtuais}/{capacidadeTotal}
-                            </span>
-                        </p>
-                    </div>
+            <div className="flex justify-between p-4 w-full">
+                <div>
+                    <h2 className="text-lg font-semibold text-red-500">{horario}</h2>
+                    <p className="text-sm font-bold text-red-500 mt-1">
+                        Quantidade de Alunos:{" "}
+                        <span className="text-black">
+                            {alunosAtuais}/{capacidadeTotal}
+                        </span>
+                    </p>
+                </div>
 
-                    <div className="flex flex-col items-center space-y-3 text-red-500">
-                        <img src="/images/icon-olho.png" alt="Abrir" className="w-5 h-5" />
-                        <img src="/images/icon-lixeira.png" alt="Excluir" className="w-5 h-5" />
-                    </div>
+                <div className="flex flex-col items-center space-y-3 text-red-500">
+                    <img src="/images/icon-olho.png" alt="Abrir" className="w-5 h-5" />
+                    <img src="/images/icon-lixeira.png" alt="Excluir" className="w-5 h-5" />
+                </div>
+            </div>
 
-                </div >
-
-                {usuarioEhAluno && (
-                    <button className="bg-red-500 text-white py-2 mt-2 hover:bg-red-600 rounded-xl transition w-full">
-                        Agendar
-                    </button>
-                )}
-            <br></br>
+            {usuarioEhAluno && (
+                <button className="bg-red-500 text-white py-2 mt-2 hover:bg-red-600 rounded-xl transition w-full">
+                    Agendar
+                </button>
+            )}
         </div>
     );
 }
