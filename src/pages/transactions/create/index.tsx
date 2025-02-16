@@ -13,16 +13,13 @@ export default function TransactionsCreate() {
   const session = useSession();
 
   const onSubmit = async (data: any) => {
-    //@ts-ignore
     if (!session.data || !session.data.user?.uuid) {
       alert("Erro: Sessão do usuário não encontrada");
       return;
     }
 
     const transactionData = {
-      //@ts-ignore
       createdById: session.data.user.uuid,
-      //@ts-ignore
       updateById: session.data.user.uuid,
       price: data.price,
       description: data.description,
