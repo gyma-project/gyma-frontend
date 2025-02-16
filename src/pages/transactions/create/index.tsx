@@ -8,10 +8,7 @@ import { useSession } from "next-auth/react";
 import Select from "@/components/atoms/Select";
 
 export default function TransactionsCreate() {
-  const {
-    register,
-    handleSubmit,
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const session = useSession();
 
@@ -29,7 +26,7 @@ export default function TransactionsCreate() {
       updateById: session.data.user.uuid,
       price: data.price,
       description: data.description,
-      category: data.type
+      category: data.category,
     };
 
     try {
@@ -42,7 +39,6 @@ export default function TransactionsCreate() {
         alert("Erro ao cadastrar transação: Ocorreu um erro desconhecido");
       }
     }
-
   };
   return (
     <div>
@@ -58,17 +54,18 @@ export default function TransactionsCreate() {
           type="number"
           required
         />
-        <Select label="Tipo">
-          <option value="">a</option>
-        </Select>
-        <Input
-          {...register("type", {
-            required: "O tipo é obrigatório",
-          })}
+        <Select
           label="Tipo"
-          placeholder="Digite o tipo da transação..."
-          required
-        />
+          {...register("category", { required: "A categoria é obrigatória" })}
+        >
+          <option value="INCOME" selected disabled>
+            Selecione o tipo...
+          </option>
+          <option value="MEMBERSHIP">Mensalidade</option>
+          <option value="SALARIES">Salário</option>
+          <option value="EQUIPAMENT">Equipamento</option>
+          <option value="OTHERS">Outros</option>
+        </Select>
         <Textbox
           {...register("description", {
             required: "A descrição é obrigatória",

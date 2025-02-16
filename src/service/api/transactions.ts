@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/service/axios";
 
 interface TransactionData {
   createdById: string;
@@ -10,18 +10,13 @@ interface TransactionData {
 
 export const createTransaction = async (transactionData: TransactionData) => {
   try {
-    const response = await axios.post("http://localhost:8081/transactions", transactionData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
+    const response = await axiosInstance.post("/transactions", transactionData);
     if (response.status !== 200) {
       throw new Error("Erro ao cadastrar transação");
     }
-
     return response.data;
   } catch (error) {
+    console.error("Erro:", error);
     return [];
   }
 };
