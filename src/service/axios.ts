@@ -2,7 +2,7 @@ import axios from "axios";
 import { getSession } from "next-auth/react"; // Importa getSession
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8081",
+  baseURL: "http://localhost:8081/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
