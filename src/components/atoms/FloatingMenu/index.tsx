@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function FloatingMenu() {
-
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,16 +27,39 @@ export default function FloatingMenu() {
           isOpen ? "left-[8px]" : "left-[-100px]"
         } top-[50%] translate-y-[-50%] z-50 bg-red-100 w-[90px] h-[300px] rounded-2xl transition-all shadow-lg flex flex-col justify-evenly`}
       >
-        <div onClick={() => router.push('/user/create')} className="w-full flex justify-center cursor-pointer hover:scale-105 transition-all">
-            <Image src="/icons/icon-register-user.svg" alt="" width={60} height={60}/>
+        <div
+          onClick={() => router.push("/user/create")}
+          className="w-full flex justify-center cursor-pointer hover:scale-105 transition-all"
+        >
+          <Image
+            src="/icons/icon-register-user.svg"
+            alt=""
+            width={60}
+            height={60}
+          />
         </div>
-        <div onClick={() => router.push('/transactions/create')} className="w-full flex justify-center cursor-pointer hover:scale-105 transition-all">
-            <Image src="/icons/icon-register-transaction.svg" alt="" width={60} height={60}/>
+        <div
+          onClick={() => router.push("/transactions/create")}
+          className="w-full flex justify-center cursor-pointer hover:scale-105 transition-all"
+        >
+          <Image
+            src="/icons/icon-register-transaction.svg"
+            alt=""
+            width={60}
+            height={60}
+          />
         </div>
-        <div onClick={() => router.push('/training/scheduler')} className="w-full flex justify-center cursor-pointer hover:scale-105 transition-all">
-            <Image src="/icons/icon-scheduler-training.svg" alt="" width={60} height={60}/>
+        <div
+          onClick={() => router.push("/training/scheduler")}
+          className="w-full flex justify-center cursor-pointer hover:scale-105 transition-all"
+        >
+          <Image
+            src="/icons/icon-scheduler-training.svg"
+            alt=""
+            width={60}
+            height={60}
+          />
         </div>
-        
       </div>
       {isOpen && (
         <div

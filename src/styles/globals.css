@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Poppins'; 
-  src: url('/fonts/poppins.ttf') format('truetype');
+  font-family: "Poppins";
+  src: url("/fonts/poppins.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -15,5 +15,5 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
