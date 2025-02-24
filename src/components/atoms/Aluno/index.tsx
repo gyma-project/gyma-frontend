@@ -1,36 +1,30 @@
 import { useState } from 'react';
 import FiltrarPorNome from '../FiltrarPorNome';
 
-const students = [
-    {
-        id: 1,
-        name: 'João Silva',
-        email: 'joao.silva@email.com',
-        birthDate: '2000-05-15',
-        cpf: '123.456.789-00',
-        userType: 'Aluno',
-    },
-    {
-        id: 2,
-        name: 'Maria Souza',
-        email: 'maria.souza@email.com',
-        birthDate: '2001-08-22',
-        cpf: '987.654.321-00',
-        userType: 'Aluno',
-    },
-];
+interface Student {
+    id: number;
+    name: string;
+    email: string;
+    birthDate: string;
+    cpf: string;
+    userType: string;
+}
 
-export default function Aluno() {
+interface AlunoProps {
+    students: Student[];
+}
+
+export default function Aluno({ students }: AlunoProps) {
     const [search, setSearch] = useState('');
 
-    const filteredStudents = students.filter(student =>
+    const filteredStudents = (students || []).filter(student =>
         student.name
-        .normalize("NFD") // Normaliza o nome do aluno
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .includes(search.toLowerCase()) 
+            .normalize("NFD") // Normaliza o nome do aluno
+            .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+            .toLowerCase()
+            .includes(search.toLowerCase()) // Verifica se o nome contém a busca
     );
-
+    
     return (
         <div>
             {/* Chama o componente de filtro passando o search e setSearch */}
@@ -38,7 +32,7 @@ export default function Aluno() {
 
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
                 {filteredStudents.map((student) => (
-                    <div key={student.id} className="group relative p-6 border border-gray-200 bg-red-100  rounded-lg shadow-lg bg-gray-50 flex justify-between items-center">
+                    <div key={student.id} className="group relative p-6 border border-gray-200 bg-red-100 rounded-lg shadow-lg bg-gray-50 flex justify-between items-center">
                         <div>
                             <div
                                 style={{
@@ -57,12 +51,12 @@ export default function Aluno() {
                             <p className="text-sm text-gray-600">Nascimento: {student.birthDate}</p>
                             <p className="text-sm text-gray-600">CPF: {student.cpf}</p>
                             <p className="text-sm text-gray-600">Tipo de usuário:
-                                <p style={{
+                                <span style={{
                                     backgroundColor: 'green', color: 'white', margin: "0 6px", padding: '5px 10px',
                                     display: 'inline-block', borderRadius: '5px'
                                 }}>
                                     {student.userType}
-                                </p>
+                                </span>
                             </p>
                         </div>
 
