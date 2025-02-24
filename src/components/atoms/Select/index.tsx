@@ -1,7 +1,7 @@
 import { SelectHTMLAttributes } from "react";
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  label: string;
+  label?: string;
   width?: string;
 }
 
@@ -13,7 +13,7 @@ export default function Select({
 }: SelectProps) {
   return (
     <div>
-      <p className="mb-2">{label}:</p>
+      {label && <p className="mb-2">{label}:</p>}
       <select
         {...otherSelectProps}
         className={`w-full ${
