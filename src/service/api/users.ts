@@ -1,4 +1,4 @@
-import axiosInstance from "@/pages/service/axios";
+import axiosInstance from "@/service/axios";
 
 interface Role {
     id: number;
@@ -27,7 +27,7 @@ interface ApiResponse {
     totalElements: number;
     totalPages: number;
     size: number;
-    content: Profile[];
+    content: Profile[];  // A propriedade content é o array de perfis.
     number: number;
     sort: any[];
     numberOfElements: number;
@@ -37,9 +37,11 @@ interface ApiResponse {
     empty: boolean;
 }
 
-export const getProfiles = async (page: number = 0, size: number = 10) => {
+// Função para buscar perfis com tipagem correta da resposta.
+export const getProfiles = async (page: number = 0, size: number = 10): Promise<ApiResponse> => {
     try {
-        const response = await axiosInstance.get<ApiResponse>(`/profiles`, {
+        // Informando ao Axios que a resposta será do tipo ApiResponse.
+        const response = await axiosInstance.get<ApiResponse>('/profiles', {
             params: { page, size }
         });
 
@@ -47,7 +49,7 @@ export const getProfiles = async (page: number = 0, size: number = 10) => {
             throw new Error("Erro ao buscar perfis");
         }
 
-        return response.data;
+        return response.data;  // Aqui a resposta é automaticamente tipada como ApiResponse.
     } catch (error) {
         console.error("Erro:", error);
         return {
