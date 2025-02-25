@@ -45,7 +45,7 @@ export default function DropdownProfile({
             <div className="flex flex-col">
               <div className="py-3 px-1 flex items-center gap-2 cursor-pointer hover:bg-red-100 rounded-lg transition-all">
                 <Image
-                  src="icons/icon-user.svg"
+                  src="/icons/icon-user.svg"
                   alt="Icone de usuário"
                   width={28}
                   height={28}
@@ -54,7 +54,7 @@ export default function DropdownProfile({
               </div>
               <div className="py-3 px-1 flex items-center gap-2 cursor-pointer hover:bg-red-100 rounded-lg transition-all">
                 <Image
-                  src="icons/icon-help.svg"
+                  src="/icons/icon-help.svg"
                   alt="Icone de ajuda"
                   width={28}
                   height={28}
