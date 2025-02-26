@@ -12,7 +12,6 @@ axiosInstance.interceptors.request.use(
   async (config) => {
 
     const session = await getSession();
-    console.log("Sessão do NextAuth:", session); 
 
     if (session && session.accessToken) {
       config.headers["Authorization"] = `Bearer ${session.accessToken}`;
@@ -28,4 +27,32 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+const axiosKeycloak = axios.create({
+  baseURL: "http://localhost:8080/admin/realms/gyma",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+axiosKeycloak.interceptors.request.use(
+  async (config) => {
+
+    const session = await getSession();
+
+    if (session && session.accessToken) {
+      config.headers["Authorization"] = `Bearer ${session.accessToken}`;
+    } else {
+      console.log("Nenhum token encontrado na sessão.");
+    }
+
+    return config;
+  },
+  (error) => {
+    console.error("Erro no interceptor:", error);
+    return Promise.reject(error);
+  }
+);
+
+
 export default axiosInstance;
+export { axiosKeycloak };
