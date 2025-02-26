@@ -6,6 +6,7 @@ export interface ProfileData {
   firstName: string;
   lastName: string;
   keycloakUserId: string;
+  imageUrl: string;
   roleIds: number[];
 }
 

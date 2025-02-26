@@ -49,11 +49,11 @@ interface KeycloakUserData {
     try {
       const response = await axiosKeycloak.get("/users?username=admin&exact=true");
   
-      if (response.status !== 201) {
-        throw new Error("Erro ao cadastrar usuário no Keycloak");
+      if (response.status !== 201 && response.status !== 200) {
+        throw new Error("Erro ao pegar uuid do usuário");
       }
   
-      return response.data.id; 
+      return response.data[0].id; 
     } catch (error) {
       console.error("Erro:", error);
       return null;

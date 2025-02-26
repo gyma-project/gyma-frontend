@@ -36,17 +36,18 @@ export default function CreateUser() {
         }
 
         // Obter o UUID do usuário do Keycloak
-        const createUserUUID = await getUUIDbyUsername(keycloakUserData.username);
+        const createUserUUID = await getUUIDbyUsername(keycloakUserData.username)
 
         console.log("IDD", createUserUUID)
         
         // Criação de perfil no spring
         const profileData: ProfileData = {
-            username: data.username,
+            username: keycloakUserData.username,
             email: data.email,
             firstName: data.firstName,
             lastName: data.lastName,
             keycloakUserId: createUserUUID,
+            imageUrl: "",
             roleIds: [0] 
         };
     
