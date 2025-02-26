@@ -157,8 +157,9 @@ export default function Usuarios() {
 
     const getUserRole = (roles: Role[]) => {
         const role = roles[0]?.name;
-        if (role === 'trainer') return 'Trainador';
-        if (role === 'student') return 'Aluno';
+        if (role === 'TRAINER') return 'Treinador';
+        if (role === 'STUDENT') return 'Aluno';
+        if (role === 'ADMIN') return 'Administrador';
         return 'Desconhecido';
     };
 
