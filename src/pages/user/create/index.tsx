@@ -2,7 +2,8 @@ import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import PageTitle from "@/components/atoms/PageTitle";
 import Select from "@/components/atoms/Select";
-import { createKeycloakUser } from "@/service/api/keycloak";
+import { createKeycloakUser, getUUIDbyUsername } from "@/service/api/keycloak";
+import { createProfile, ProfileData } from "@/service/api/profiles";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 
@@ -16,8 +17,9 @@ export default function CreateUser() {
           return;
         }
       
+        // Dados para criar o usuário no Keycloak
         const keycloakUserData = {
-          username: data.username,
+          username: data.firstName.toLowerCase() + Math.round(Math.random()*1000),
           email: data.email,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -25,15 +27,37 @@ export default function CreateUser() {
           userType: data.userType,
         };
       
-        const newUserKeycloak = await createKeycloakUser(keycloakUserData);
-      
-        if (newUserKeycloak) {
-          alert("Usuário criado com sucesso!");
+        // Criação do usuário no Keycloak
+        try {
+            await createKeycloakUser(keycloakUserData)
+        } catch(_) {
+            alert("Erro ao criar perfil no keycloak")
+            return;
+        }
+
+        // Obter o UUID do usuário do Keycloak
+        const createUserUUID = await getUUIDbyUsername(keycloakUserData.username);
+
+        console.log("IDD", createUserUUID)
+        
+        // Criação de perfil no spring
+        const profileData: ProfileData = {
+            username: data.username,
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            keycloakUserId: createUserUUID,
+            roleIds: [0] 
+        };
+    
+        const newProfile = await createProfile(profileData);
+    
+        if (newProfile) {
+            alert("Perfil criado com sucesso!");
         } else {
-          alert("Erro ao criar o usuário");
+            alert("Erro ao criar o perfil");
         }
       };
-      
 
     return (
         <div>

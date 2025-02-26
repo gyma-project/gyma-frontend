@@ -12,7 +12,6 @@ axiosInstance.interceptors.request.use(
   async (config) => {
 
     const session = await getSession();
-    console.log("Sessão do NextAuth:", session); 
 
     if (session && session.accessToken) {
       config.headers["Authorization"] = `Bearer ${session.accessToken}`;
@@ -39,7 +38,6 @@ axiosKeycloak.interceptors.request.use(
   async (config) => {
 
     const session = await getSession();
-    console.log("Sessão do NextAuth:", session); 
 
     if (session && session.accessToken) {
       config.headers["Authorization"] = `Bearer ${session.accessToken}`;

@@ -15,7 +15,7 @@ interface KeycloakUserData {
       
       const keycloakUser = {
         enabled: true,
-        username: userData.firstName.toLowerCase() + Math.round(Math.random()*1000),
+        username: userData.username,
         email: userData.email,
         firstName: userData.firstName,
         lastName: userData.lastName,
@@ -34,11 +34,26 @@ interface KeycloakUserData {
   
       const response = await axiosKeycloak.post("/users", keycloakUser);
   
-      if (response.status !== 201) {
+      if (response.status !== 201 && response.status !== 200) {
         throw new Error("Erro ao cadastrar usuário no Keycloak");
       }
   
       return response.data; 
+    } catch (error) {
+      console.error("Erro:", error);
+      return null;
+    }
+  };
+
+  export const getUUIDbyUsername = async (username: string) => {
+    try {
+      const response = await axiosKeycloak.get("/users?username=admin&exact=true");
+  
+      if (response.status !== 201) {
+        throw new Error("Erro ao cadastrar usuário no Keycloak");
+      }
+  
+      return response.data.id; 
     } catch (error) {
       console.error("Erro:", error);
       return null;
