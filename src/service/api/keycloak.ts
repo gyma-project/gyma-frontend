@@ -47,7 +47,7 @@ interface KeycloakUserData {
 
   export const getUUIDbyUsername = async (username: string) => {
     try {
-      const response = await axiosKeycloak.get("/users?username=admin&exact=true");
+      const response = await axiosKeycloak.get(`/users?username=${username}&exact=true`);
   
       if (response.status !== 201 && response.status !== 200) {
         throw new Error("Erro ao pegar uuid do usuário");

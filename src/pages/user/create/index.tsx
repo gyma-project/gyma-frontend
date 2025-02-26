@@ -41,6 +41,14 @@ export default function CreateUser() {
         console.log("IDD", createUserUUID)
         
         // Criação de perfil no spring
+
+        const dictUserType: typeof data.userType = {
+            "ADMIN": 1,
+            "TRAINER": 2,
+            "STUDENT": 3
+        }
+
+
         const profileData: ProfileData = {
             username: keycloakUserData.username,
             email: data.email,
@@ -48,7 +56,7 @@ export default function CreateUser() {
             lastName: data.lastName,
             keycloakUserId: createUserUUID,
             imageUrl: "",
-            roleIds: [0] 
+            roleIds: [dictUserType[data.userType]] 
         };
     
         const newProfile = await createProfile(profileData);
@@ -94,7 +102,7 @@ export default function CreateUser() {
                     {...register("userType", { required: "Selecione um perfil" })}
                 >
                     <option value="" disabled>Selecione um perfil</option>
-                    <option value="STUDENT">Cliente</option>
+                    <option value="STUDENT">Estudante</option>
                     <option value="TRAINER">Treinador</option>
                     <option value="ADMIN">Administrador</option>
                 </Select>
