@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 
 export default function CreateUser() {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const session = useSession();
 
     const onSubmit = async (data: any) => {
@@ -54,6 +54,7 @@ export default function CreateUser() {
     
         if (newProfile) {
             alert("Perfil criado com sucesso!");
+            reset()
         } else {
             alert("Erro ao criar o perfil");
         }
