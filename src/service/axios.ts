@@ -8,6 +8,15 @@ const axiosInstance = axios.create({
   },
 });
 
+// Adiciona o token automaticamente antes de cada requisição
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token"); // Ou onde você armazena o token
+  if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 axiosInstance.interceptors.request.use(
   async (config) => {
     if (typeof window !== "undefined") {
