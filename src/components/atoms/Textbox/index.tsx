@@ -1,4 +1,4 @@
-import { Dispatch, TextareaHTMLAttributes, SetStateAction } from "react";
+import { TextareaHTMLAttributes } from "react";
 
 interface TextboxProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
