@@ -11,7 +11,7 @@ export default function CreateUser() {
   const { register, handleSubmit, reset } = useForm();
   const session = useSession();
 
-  //@ts-ignore
+  //@ts-nocheck
   const onSubmit = async (data: any) => {
     if (!session.data || !session.data.user?.uuid) {
       alert("Erro: Sessão do usuário não encontrada");
@@ -31,7 +31,7 @@ export default function CreateUser() {
     // Criação do usuário no Keycloak
     try {
       await createKeycloakUser(keycloakUserData);
-    } catch (_) {
+    } catch {
       alert("Erro ao criar perfil no keycloak");
       return;
     }

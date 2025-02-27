@@ -3,7 +3,7 @@ import FloatingMenu from "@/components/atoms/FloatingMenu";
 import Footer from "@/components/molecules/Footer";
 import Header from "@/components/molecules/Header";
 import "@/styles/globals.css";
-import { SessionProvider, useSession } from "next-auth/react";
+import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
