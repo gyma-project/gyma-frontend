@@ -33,6 +33,7 @@ interface Exercise {
 
 interface TrainingSheet {
     id: number;
+    name: string;
     student: User;
     trainer: User;
     exercises: Exercise[];
