@@ -11,7 +11,6 @@ export default function CreateUser() {
   const { register, handleSubmit, reset } = useForm();
   const session = useSession();
 
-  //@ts-nocheck
   const onSubmit = async (data: any) => {
     if (!session.data || !session.data.user?.uuid) {
       alert("Erro: Sessão do usuário não encontrada");
