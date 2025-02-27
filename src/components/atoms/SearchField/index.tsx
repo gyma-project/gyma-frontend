@@ -1,4 +1,3 @@
-import { Dispatch, InputHTMLAttributes, SetStateAction } from "react";
 import Image from "next/image";
 
 interface InputProps {

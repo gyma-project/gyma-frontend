@@ -1,9 +1,10 @@
+import { Session } from "@auth/core/types";
 import Image from "next/image";
 import { useState } from "react";
 
 interface DropdownProfileProps {
   handleLogin: () => void;
-  session: any;
+  session: Session;
 }
 
 export default function DropdownProfile({

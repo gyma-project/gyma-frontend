@@ -21,7 +21,6 @@ export const createProfile = async (profileData: ProfileData) => {
     return response.data;
   } catch (error) {
     console.error("Erro:", error);
-    return []
+    return [];
   }
 };
-  

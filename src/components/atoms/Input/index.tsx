@@ -14,7 +14,7 @@ export default function Input({
   ...otherInputProps
 }: InputProps) {
   const getErrorMessage = (
-    error: string | FieldError | undefined
+    error: string | FieldError | undefined,
   ): string | undefined => {
     if (typeof error === "string") {
       return error;

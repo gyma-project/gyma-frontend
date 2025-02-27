@@ -29,7 +29,7 @@ export default function TransactionsCreate() {
     try {
       await createTransaction(transactionData);
       alert("Transação cadastrada com sucesso!");
-      reset()
+      reset();
     } catch (error) {
       if (error instanceof Error) {
         alert("Erro ao cadastrar transação: " + error.message);

@@ -10,7 +10,6 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-
     const session = await getSession();
 
     if (session && session.accessToken) {
@@ -24,7 +23,7 @@ axiosInstance.interceptors.request.use(
   (error) => {
     console.error("Erro no interceptor:", error);
     return Promise.reject(error);
-  }
+  },
 );
 
 const axiosKeycloak = axios.create({
@@ -36,7 +35,6 @@ const axiosKeycloak = axios.create({
 
 axiosKeycloak.interceptors.request.use(
   async (config) => {
-
     const session = await getSession();
 
     if (session && session.accessToken) {
@@ -50,9 +48,8 @@ axiosKeycloak.interceptors.request.use(
   (error) => {
     console.error("Erro no interceptor:", error);
     return Promise.reject(error);
-  }
+  },
 );
-
 
 export default axiosInstance;
 export { axiosKeycloak };
