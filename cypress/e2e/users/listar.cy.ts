@@ -27,10 +27,8 @@ describe('Criação de Usuário', () => {
 
         cy.wait(2000);
 
-        // Preencher o campo de pesquisa para buscar pelo nome
-        const searchName = 'Benicio'; // Nome do usuário a ser pesquisado
+        const searchName = 'Benicio';
 
-        // Acessar o campo de pesquisa pelo placeholder e digitar o nome
         cy.get('input[placeholder="Buscar pelo nome..."]').type(searchName);
 
     });
