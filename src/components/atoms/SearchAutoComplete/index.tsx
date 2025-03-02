@@ -3,6 +3,9 @@ import { getProfiles, Role } from "@/service/api/profiles"; // Serviço de perfi
 import { useSession } from "next-auth/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
+import { getExercises, Exercise } from "@/service/api/exercises";
+
+
 
 interface User {
   id: string;
@@ -83,7 +86,7 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
 
   return (
     <div className="flex flex-col">
-      <label  className="mb-4" htmlFor={name}>{label}</label>
+      <label className="mb-4" htmlFor={name}>{label}</label>
       <div className="input-group relative">
         <input
           id={name}
@@ -92,14 +95,14 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
           value={selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName}` : searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Buscar usuário..."
-          className="border p-2 pr-8 w-full max-w-md rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-80 md:w-96 lg:w-full" // Deixe espaço para o "X" no final
+          className="w-full border border-red-500 text-sm rounded-xl py-2 px-5 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" // Estilo adaptado
         />
         {isLoading && <span className="loading-indicator">Carregando...</span>}
 
         {/* Exibe o "X" para limpar o campo */}
         {selectedUser && (
           <span
-            className="relative right-8 top-1/2 transform cursor-pointer"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
             onClick={clearSelection}
           >
             <FontAwesomeIcon icon={faCircleXmark} />
@@ -111,7 +114,7 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
       {searchQuery.length > 2 && !selectedUser && (
         <div
           id="unit-complete-results"
-          className="br-list absolute mt-1 w-full max-w-md bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden"
+          className="br-list absolute mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden"
         >
           <div className="max-h-60 overflow-y-auto">
             {users.map((user) => (
