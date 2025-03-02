@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import FiltrarPorNome from "../FiltrarPorNome";
 import { getTrainingSheets, deleteTrainingSheet } from "@/service/api/training-sheets";
 import axiosInstance from "@/service/axios";
+import Image from "next/image";
 
 interface Role {
     id: number;
@@ -56,7 +57,7 @@ export default function TrainingSheetCard() {
 
     useEffect(() => {
         const fetchTrainingSheets = async () => {
-            const data = await getTrainingSheets(0, 10);
+            const data = await getTrainingSheets();
             if (data) {
                 setTrainingSheets(data);
             }
@@ -153,6 +154,7 @@ export default function TrainingSheetCard() {
 
                         <div className="flex-1 max-w-[240px]">
                             <h2 className="text-lg font-semibold text-red-500">{sheet.name}</h2>
+                            <p>Descrição:{sheet.description}</p>
                         </div>
 
                         <div className="mt-4 flex flex-col space-y-5">
@@ -201,16 +203,18 @@ export default function TrainingSheetCard() {
                                 <strong>Atualizado por: </strong>{selectedSheet.updateBy.firstName} {selectedSheet.updateBy.lastName}
                             </p>
                             <h3 className="text-lg mt-9">Exercícios</h3>
-                            <p>
-                                <strong>Descrição: </strong>{selectedSheet.description}
-                            </p>
                             <ul>
-                                {selectedSheet.exercises.map((exercise) => (
-                                    <li key={exercise.id}>
-                                        {exercise.name} - {exercise.muscleGroup} ({exercise.amount}x{exercise.repetition})
-                                    </li>
-                                ))}
+                                {selectedSheet?.exercises?.length ? (
+                                    selectedSheet.exercises.map((exercise: Exercise) => (
+                                        <li key={exercise.id}>
+                                            {exercise.name} - {exercise.muscleGroup} ({exercise.amount}x{exercise.repetition})
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li>Nenhum exercício disponível</li>
+                                )}
                             </ul>
+
                         </div>
                         <button
                             onClick={() => setShowViewModal(false)}
@@ -279,3 +283,4 @@ export default function TrainingSheetCard() {
         </div>
     );
 }
+
