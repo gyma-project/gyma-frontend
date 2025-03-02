@@ -52,4 +52,3 @@ axiosKeycloak.interceptors.request.use(
 );
 
 export default axiosInstance;
-export { axiosKeycloak };
