@@ -12,7 +12,7 @@ export default function SearchField({ width, ...otherInputProps }: InputProps) {
     >
       <Image src="/icons/icon-search.svg" alt="search" width={16} height={16} />
       <input
-        className="w-full text-[12px] outline-none"
+        className="w-full text-[12px] outline-none placeholder:text-[14px]"
         placeholder="Buscar..."
         {...otherInputProps}
         type="text"
