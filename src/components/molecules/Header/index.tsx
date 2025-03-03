@@ -1,12 +1,14 @@
 import DropdownProfile from "@/components/atoms/DropdownProfile";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function Header() {
   const session = useSession();
+  const router = useRouter();
 
   return (
     <div className="h-[88px] w-full shadow-lg flex justify-center items-center">
-      <h1 className="text-[26px] text-red-500 font-bold drop-shadow-lg">
+      <h1 className="text-[26px] text-red-500 font-bold drop-shadow-lg curso" onClick={() => router.push("/")}>
         GYMA
       </h1>
       {session.status == "authenticated" ? (

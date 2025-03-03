@@ -27,9 +27,11 @@ export default function TransactionsHistory() {
     <div>
       <PageTitle>Histórico de transações</PageTitle>
       <SearchField placeholder="Buscar transações" />
-			{transactions && transactions.map((transaction) => (
-				<TransactionComponent key={transaction.id} description={transaction.description} value={transaction.price} />
-			))}
+			<div className="flex flex-col gap-5 my-3">
+				{transactions && transactions.map((transaction) => (
+					<TransactionComponent key={transaction.id} description={transaction.description} value={transaction.price} />
+				))}
+			</div>
 
     </div>
   );
