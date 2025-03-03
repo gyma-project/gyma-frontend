@@ -23,3 +23,34 @@ export const createTrainingSession = async (trainingData: TrainingData) => {
     throw error;
   }
 };
+
+export const getTrainingSession = async (id: string) => {
+    try {
+      const response = await axiosInstance.get(`/training-sheets/${id}`);
+      
+      if (response.status !== 200) {
+        throw new Error("Erro ao buscar a ficha de treino");
+      }
+  
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar a ficha de treino:", error);
+      throw error;
+    }
+};
+  
+export const updateTrainingSession = async (id: string, trainingData: TrainingData) => {
+    try {
+      const response = await axiosInstance.put(`/training-sheets/${id}`, trainingData);
+  
+      if (response.status !== 200) {
+        throw new Error("Erro ao atualizar a ficha de treino");
+      }
+  
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao atualizar a ficha de treino:", error);
+      throw error;
+    }
+};
+  

@@ -116,18 +116,18 @@ const MultipleAutoComplete: React.FC<MultipleAutoCompleteProps> = ({
 
   const addItem = (item: User | Exercise) => {
     if (!selectedItems.some((i) => i.id === item.id)) {
-      const newSelection = [...selectedItems, item];
-      setSelectedItems(newSelection);
-      onChange(newSelection.map((i) => String(i.id))); // Converter o ID para string
+      const newSelection = [...selectedItems, item];  // Adiciona o objeto completo
+      setSelectedItems(newSelection); // Armazena o objeto completo no estado
+      onChange(newSelection.map((i) => String(i.id)));  // Passa o ID para o pai, se necessário
     }
     setSearchQuery("");
     setResults([]);
   };
-
+  
   const removeItem = (itemId: string) => {
-    const updatedItems = selectedItems.filter((item) => String(item.id) !== itemId); // Converter o ID para string
-    setSelectedItems(updatedItems);
-    onChange(updatedItems.map((i) => String(i.id))); // Converter o ID para string
+    const updatedItems = selectedItems.filter((item) => String(item.id) !== itemId);  // Filtra pelo ID
+    setSelectedItems(updatedItems);  // Atualiza o estado com os itens restantes
+    onChange(updatedItems.map((i) => String(i.id)));  // Passa os IDs para o pai
   };
 
   return (
