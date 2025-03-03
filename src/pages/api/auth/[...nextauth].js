@@ -9,6 +9,10 @@ export const authOptions = {
       issuer: process.env.KEYCLOAK_ISSUER,
     }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 10 * 60,
+  },
   callbacks: {
     async jwt({ token, user, account, profile }) {
       if (account && account.access_token) {
