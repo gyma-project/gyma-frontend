@@ -1,3 +1,4 @@
+import TransactionComponent from "@/components/atoms/TransactionComponent";
 import UserCard from "@/components/atoms/UserCard";
 import MenuList from "@/components/molecules/MenuList";
 import {
@@ -14,6 +15,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-5">
+      <TransactionComponent/>
       <UserCard
         userName={
           session.data?.user
