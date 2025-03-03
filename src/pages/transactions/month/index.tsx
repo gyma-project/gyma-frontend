@@ -93,7 +93,7 @@ export default function Month() {
     <div>
       <PageTitle>Resumo do mês atual</PageTitle>
       <div className="flex flex-col gap-4">
-        <div className="flex gap-4">
+        <div className="flex gap-4 max-md:flex-col">
           <div className="h-[200px] bg-red-50 rounded-xl flex-1 p-6 hover:bg-red-100 transition-all duration-300 shadow-md">
             <p className="text-[28px] font-semibold text-lime-500">Entradas</p>
             <p className="text-[20px] font-medium text-lime-500 mt-2">
