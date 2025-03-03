@@ -11,11 +11,9 @@ import { signIn, useSession } from "next-auth/react";
 export default function Home() {
   const session = useSession();
 
-  console.log(session);
-
   return (
     <div className="flex flex-col gap-5">
-      <TransactionComponent/>
+      <TransactionComponent value={250} description="Total de receitas" />
       <UserCard
         userName={
           session.data?.user

@@ -3,13 +3,11 @@ import Image from "next/image";
 interface TransactionComponentProps {
   value: number;
   description: string;
-  date: string;
 }
 
 export default function TransactionComponent({
   value,
   description,
-  date,
 }: TransactionComponentProps) {
   return (
     <div className="h-[119px] py-[30px] px-[20px] bg-red-50 flex gap-4 rounded-xl shadow-md">
@@ -17,8 +15,8 @@ export default function TransactionComponent({
         <Image src={"/icons/icon-transaction-increment.svg"} alt="money" width={30} height={30} />
       </div>
       <div>
-        <p className="text-[22px] font-bold text-lime-500">R$ 250</p>
-        <p className="text-lime-500">Pagamento mensal de usuário</p>
+        <p className="text-[22px] font-bold text-lime-500">R$ {value}</p>
+        <p className="text-lime-500">{description}</p>
       </div>
     </div>
   );
