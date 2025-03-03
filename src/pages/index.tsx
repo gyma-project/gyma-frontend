@@ -14,6 +14,7 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-5">
       <TransactionComponent value={250} description="Total de receitas" />
+      <TransactionComponent value={-250} description="Total de receitas" />
       <UserCard
         userName={
           session.data?.user
