@@ -13,6 +13,7 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
+  keycloakUserId: string;
 }
 
 interface SearchAutoCompleteProps {
@@ -46,12 +47,18 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
 
         // Verifica se o resultado é um array
         if (Array.isArray(usersData?.content)) {
-          const filteredUsers = usersData.content.filter((user: User) =>
-            `${user.firstName} ${user.lastName}`.toLowerCase().includes(query.toLowerCase())
-          );
-
+          const filteredUsers = usersData.content.map((user: any) => ({
+            id: user.id.toString(),
+            username: user.username,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            keycloakUserId: user.keycloakId,
+          }));
+  
+          console.log("Usuários filtrados:", filteredUsers);
           setUsers(filteredUsers.length > 0 ? filteredUsers : []);
-        } else {
+        }  else {
           console.error("Erro: O retorno não é um array.");
           setUsers([]);
         }
@@ -118,12 +125,12 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
         >
           <div className="max-h-60 overflow-y-auto">
             {users.map((user) => (
-              <div
+                <div
                 key={user.id}
                 className="br-item px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
                 onClick={() => {
                   setSelectedUser(user); // Define o usuário selecionado
-                  onChange(user.id); // Passa o id para o componente pai
+                  onChange(user.keycloakUserId); // Passa o keycloakUserId para o componente pai
                 }}
               >
                 <div className="br-radio flex items-center gap-2">
@@ -131,7 +138,7 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
                     id={`user-${user.id}`}
                     type="radio"
                     name="user"
-                    value={user.id}
+                    value={user.keycloakUserId} // Agora armazena o keycloakUserId
                     className="hidden"
                   />
                   <label htmlFor={`user-${user.id}`} className="cursor-pointer">
@@ -139,6 +146,7 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
                   </label>
                 </div>
               </div>
+            
             ))}
           </div>
         </div>

@@ -17,6 +17,7 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
+  keycloakUserId: string;
 }
 
 interface MultipleAutoCompleteProps {
@@ -156,7 +157,7 @@ const MultipleAutoComplete: React.FC<MultipleAutoCompleteProps> = ({
           >
             <span>
               {entityType === EntityType.User
-                ? `${(item as User).firstName} ${(item as User).lastName}`
+                ? `${(item as User).firstName} ${(item as User).lastName} ${(item as User).keycloakUserId})`
                 : `${(item as Exercise).name} (${(item as Exercise).amount}x${(item as Exercise).repetition}) ${muscleGroupTranslations[(item as Exercise).muscleGroup] || (item as Exercise).muscleGroup}`}
             </span>
             <FontAwesomeIcon
