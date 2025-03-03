@@ -26,7 +26,9 @@ ChartJS.register(
 
 export default function Month() {
   const [transactions, setTransactions] = useState<transactionType[]>([]);
-  const [filteredTransactions, setFilteredTransactions] = useState<transactionType[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<
+    transactionType[]
+  >([]);
 
   useEffect(() => {
     getTransactions().then((data) => {
@@ -35,7 +37,10 @@ export default function Month() {
 
       const filtered = data.content.filter((transaction: transactionType) => {
         const transactionDate = new Date(transaction.createdAt);
-        return transactionDate.getMonth() === currentMonth && transactionDate.getFullYear() === currentYear;
+        return (
+          transactionDate.getMonth() === currentMonth &&
+          transactionDate.getFullYear() === currentYear
+        );
       });
 
       setTransactions(filtered);
@@ -45,9 +50,9 @@ export default function Month() {
 
   const calculateBalanceOverTime = () => {
     let balance = 0;
-    const balances: number[] = [];  
-    const dates: string[] = [];     
-    
+    const balances: number[] = [];
+    const dates: string[] = [];
+
     filteredTransactions.forEach((transaction) => {
       balance += transaction.price;
       const transactionDate = new Date(transaction.createdAt);
@@ -76,8 +81,12 @@ export default function Month() {
     ],
   };
 
-  const entradas = filteredTransactions.filter((transaction) => transaction.price > 0).reduce((acc, curr) => acc + curr.price, 0);
-  const saidas = filteredTransactions.filter((transaction) => transaction.price < 0).reduce((acc, curr) => acc + curr.price, 0);
+  const entradas = filteredTransactions
+    .filter((transaction) => transaction.price > 0)
+    .reduce((acc, curr) => acc + curr.price, 0);
+  const saidas = filteredTransactions
+    .filter((transaction) => transaction.price < 0)
+    .reduce((acc, curr) => acc + curr.price, 0);
   const saldo = entradas + saidas;
 
   return (
@@ -85,21 +94,42 @@ export default function Month() {
       <PageTitle>Resumo do mês atual</PageTitle>
       <div className="flex flex-col gap-2">
         <div className="flex gap-2">
-            <div className="h-[200px] bg-red-50 rounded-xl flex-1 p-4 border border-lime-500 hover:bg-red-100">
-                <p className="text-[26px]">Entradas</p>
-                <p>R$ {entradas.toFixed(2)}</p>
-            </div>
-            <div className="h-[200px] bg-red-50 rounded-xl flex-1 p-4 border border-lime-500 hover:bg-red-100">
-                <p>Saídas: R$ {saidas.toFixed(2)}</p>
-            </div>
+          <div className="h-[200px] bg-red-50 rounded-xl flex-1 p-6 hover:bg-red-100 transition-all duration-300 shadow-md">
+            <p className="text-[28px] font-semibold text-lime-500">Entradas</p>
+            <p className="text-[20px] font-medium text-lime-500 mt-2">
+              R$ {entradas.toFixed(2)}
+            </p>
+            <p className="mt-[40px] text-[14px] text-slate-500">
+              Valores que entraram durante esse mês.
+            </p>
+          </div>
+
+          <div className="h-[200px] bg-red-50 rounded-xl flex-1 p-6  hover:bg-red-100 transition-all duration-300 shadow-md">
+            <p className="text-[28px] font-semibold text-red-500">Despesas</p>
+            <p className="text-[20px] font-medium text-red-500 mt-2">
+              R$ {saidas.toFixed(2)}
+            </p>
+            <p className="mt-[40px] text-[14px] text-slate-500">
+              Valores que sairam durante esse mês.
+            </p>
+          </div>
         </div>
-        <div className="h-[200px] bg-red-50 rounded-xl flex-1 p-4 border border-lime-500 hover:bg-red-100">
-            <p>Saldo Atual: R$ {saldo.toFixed(2)}</p>
+
+        <div className="h-[200px] bg-red-50 rounded-xl flex-1 p-6  hover:bg-red-100 transition-all duration-300 shadow-md">
+          <p className="text-[28px] font-semibold text-slate-700">Saldo Atual</p>
+          <p className="text-[20px] font-medium mt-2 text-slate-700">
+            R$ {saldo.toFixed(2)}
+          </p>
+          <p className="mt-[40px] text-[14px] text-slate-500">
+            Diferença entre entradas e saídas desse mês no dia atual.
+          </p>
         </div>
       </div>
       <div className="my-6 w-full flex flex-col justify-center items-center">
         <Line data={chartData} options={{ responsive: true }} />
-        <p className="text-[12px] text-slate-500 mb-8 mt-3">Gráfico de variação de saldo durante entradas e saídas.</p>
+        <p className="text-[12px] text-slate-500 mb-8 mt-3">
+          Gráfico de variação de saldo durante entradas e saídas.
+        </p>
       </div>
     </div>
   );
