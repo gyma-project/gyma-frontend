@@ -30,9 +30,9 @@ export default function Month() {
     return (
         <div>
             <PageTitle>Resumo do mês atual</PageTitle>
-            <p>Entradas: {entradas.toFixed(2)}</p>
-            <p>Saídas: {saidas.toFixed(2)}</p>
-            <p>Saldo Atual: {saldo.toFixed(2)}</p>
+            <p>Entradas: R$ {entradas.toFixed(2)}</p>
+            <p>Saídas: R$ {saidas.toFixed(2)}</p>
+            <p>Saldo Atual: R$ {saldo.toFixed(2)}</p>
         </div>
     );
 }
