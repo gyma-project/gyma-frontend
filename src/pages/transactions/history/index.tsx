@@ -4,7 +4,7 @@ import TransactionComponent, { categoriesConversion } from "@/components/atoms/T
 import { getTransactions } from "@/service/api/transactions";
 import { useEffect, useState } from "react";
 
-interface transactionType {
+export interface transactionType {
   id: string;
   createdById: string;
   updateById: string;
