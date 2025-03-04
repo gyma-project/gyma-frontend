@@ -2,16 +2,22 @@ import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import PageTitle from "@/components/atoms/PageTitle";
 import Select from "@/components/atoms/Select";
-import ImageField from "@/components/atoms/ImageField";
 import { createKeycloakUser, getUUIDbyUsername } from "@/service/api/keycloak";
 import { createProfile, ProfileData } from "@/service/api/profiles";
 import { useSession } from "next-auth/react";
-import { useForm, Controller } from "react-hook-form";
 import uploadImageToMinIO from "@/service/minio";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function CreateUser() {
-  const { register, handleSubmit, reset, control } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const session = useSession();
+  const [image, setImage] = useState<File | null>(null);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
+    setImage(file);
+  };
 
   const onSubmit = async (data: any) => {
     if (!session.data || !session.data.user?.uuid) {
@@ -39,11 +45,11 @@ export default function CreateUser() {
     // Obter token do usuário criado - keycloak
     const createUserUUID = await getUUIDbyUsername(keycloakUserData.username);
 
-    // Salvar imagem de perfil - minio
+    // Salvar imagem de perfil - minio (se houver imagem)
     let imageUrl = "";
-    if (data.image && data.image[0]) {
+    if (image) {
       try {
-        imageUrl = await uploadImageToMinIO(data.image[0], createUserUUID); 
+        imageUrl = await uploadImageToMinIO(image, createUserUUID);
       } catch (error) {
         console.error("Erro ao enviar a imagem para o MinIO:", error);
         alert("Erro ao enviar imagem para o MinIO");
@@ -82,17 +88,19 @@ export default function CreateUser() {
     <div>
       <PageTitle>Cadastrar Usuário</PageTitle>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        <Controller
-          name="image"
-          control={control}
-          render={({ field }) => (
-            <ImageField
-              control={control}
-              accept="image/jpg"
-              {...field}
-            />
-          )}
-        />
+        {/* Input de imagem */}
+        <div>
+          <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+            Imagem de Perfil
+          </label>
+          <input
+            type="file"
+            id="image"
+            accept="image/jpg, image/jpeg, image/png"
+            onChange={handleImageChange}
+            className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
         
         <Input
           label="Nome"
