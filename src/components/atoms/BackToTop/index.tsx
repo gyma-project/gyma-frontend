@@ -30,7 +30,7 @@ export default function BackToTop() {
         onClick={scrollToTop}
       >
         <Image
-          src="icons/icon-backtotop-arrow.svg"
+          src="/icons/icon-backtotop-arrow.svg"
           alt="Voltar ao topo"
           width={32}
           height={32}
