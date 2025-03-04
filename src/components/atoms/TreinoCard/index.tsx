@@ -1,22 +1,5 @@
 import { useState } from "react";
 import FiltrarPorNome from "../FiltrarPorNome";
-const treinos = [
-    {
-        id: 1,
-        titulo: "Treino de Costas",
-        descricao: "Série de exercícios focados em fortalecer a musculatura das costas.",
-    },
-    {
-        id: 2,
-        titulo: "Treino de Pernas",
-        descricao: "Exercícios para fortalecimento das pernas e glúteos.",
-    },
-    {
-        id: 3,
-        titulo: "Treino de Peito",
-        descricao: "Rotina para desenvolver o peitoral com exercícios variados.",
-    },
-];
 
 
 export default function TreinoCard() {
