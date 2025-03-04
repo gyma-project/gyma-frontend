@@ -19,6 +19,7 @@ export default function CreateUser() {
       return;
     }
 
+    // Criar usuário - Keycloak
     const keycloakUserData = {
       username: data.firstName.toLowerCase() + Math.round(Math.random() * 1000),
       email: data.email,
@@ -28,17 +29,6 @@ export default function CreateUser() {
       userType: data.userType,
     };
 
-    let imageUrl = "";
-    if (data.image) {
-      try {
-        imageUrl = await uploadImageToMinIO(data.image);
-      } catch (error) {
-        console.error("Erro ao enviar a imagem para o MinIO:", error);
-        alert("Erro ao enviar imagem para o MinIO");
-        return;
-      }
-    }
-
     try {
       await createKeycloakUser(keycloakUserData);
     } catch {
@@ -46,8 +36,22 @@ export default function CreateUser() {
       return;
     }
 
+    // Obter token do usuário criado - keycloak
     const createUserUUID = await getUUIDbyUsername(keycloakUserData.username);
 
+    // Salvar imagem de perfil - minio
+    let imageUrl = "";
+    if (data.image && data.image[0]) {
+      try {
+        imageUrl = await uploadImageToMinIO(data.image[0], createUserUUID); 
+      } catch (error) {
+        console.error("Erro ao enviar a imagem para o MinIO:", error);
+        alert("Erro ao enviar imagem para o MinIO");
+        return;
+      }
+    }
+
+    // Criar perfil - backend
     const dictUserType: typeof data.userType = {
       ADMIN: 1,
       TRAINER: 2,
