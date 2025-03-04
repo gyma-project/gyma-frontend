@@ -95,7 +95,7 @@ export default function Month() {
       <div className="flex flex-col gap-4">
         <div className="flex gap-4 max-md:flex-col">
           <div className="h-[200px] bg-red-50 rounded-xl flex-1 p-6 hover:bg-red-100 transition-all duration-300 shadow-md">
-            <p className="text-[28px] font-semibold text-lime-500">Entradas</p>
+            <p className="text-[28px] font-semibold text-slate-700">Entradas</p>
             <p className="text-[20px] font-medium text-lime-500 mt-2">
               R$ {entradas.toFixed(2)}
             </p>
@@ -105,7 +105,7 @@ export default function Month() {
           </div>
 
           <div className="h-[200px] bg-red-50 rounded-xl flex-1 p-6  hover:bg-red-100 transition-all duration-300 shadow-md">
-            <p className="text-[28px] font-semibold text-red-500">Despesas</p>
+            <p className="text-[28px] font-semibold text-slate-700">Despesas</p>
             <p className="text-[20px] font-medium text-red-500 mt-2">
               R$ {saidas.toFixed(2)}
             </p>
