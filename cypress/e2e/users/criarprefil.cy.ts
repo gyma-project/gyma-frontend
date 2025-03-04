@@ -19,7 +19,7 @@ describe('Criação de Usuário com Login', () => {
 
         cy.contains('p', 'Gerência de usuários');
 
-        cy.contains('p', 'Cadastrar usuário').click({ force: true });
+        cy.contains('span', 'Cadastrar usuário').click({ force: true });
 
         cy.url().should('include', '/user/create');
 

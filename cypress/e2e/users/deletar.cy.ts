@@ -16,9 +16,9 @@ describe('Criação de Usuário', () => {
 
         cy.contains('p', 'Gerência de usuários');
 
-        cy.contains('p', 'Listagem de usuários').click({ force: true });
+        cy.contains('span', 'Listagem de usuários').click({ force: true });
 
-        cy.wait(5000);
+        cy.wait(4000);
 
         const searchName = 'keilany';
 

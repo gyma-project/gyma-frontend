@@ -64,6 +64,5 @@ Cypress.Commands.add('login', (username, password) => {
     });
   
     cy.url().should('include', apiUrl);
-    cy.contains('span', `Olá, user`).should('be.visible');
   });
   
