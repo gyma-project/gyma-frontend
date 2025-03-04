@@ -2,13 +2,15 @@ import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import PageTitle from "@/components/atoms/PageTitle";
 import Select from "@/components/atoms/Select";
+import ImageField from "@/components/atoms/ImageField";
 import { createKeycloakUser, getUUIDbyUsername } from "@/service/api/keycloak";
 import { createProfile, ProfileData } from "@/service/api/profiles";
 import { useSession } from "next-auth/react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import uploadImageToMinIO from "@/service/minio";
 
 export default function CreateUser() {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, control } = useForm();
   const session = useSession();
 
   const onSubmit = async (data: any) => {
@@ -17,7 +19,6 @@ export default function CreateUser() {
       return;
     }
 
-    // Dados para criar o usuário no Keycloak
     const keycloakUserData = {
       username: data.firstName.toLowerCase() + Math.round(Math.random() * 1000),
       email: data.email,
@@ -27,7 +28,17 @@ export default function CreateUser() {
       userType: data.userType,
     };
 
-    // Criação do usuário no Keycloak
+    let imageUrl = "";
+    if (data.image) {
+      try {
+        imageUrl = await uploadImageToMinIO(data.image);
+      } catch (error) {
+        console.error("Erro ao enviar a imagem para o MinIO:", error);
+        alert("Erro ao enviar imagem para o MinIO");
+        return;
+      }
+    }
+
     try {
       await createKeycloakUser(keycloakUserData);
     } catch {
@@ -35,12 +46,7 @@ export default function CreateUser() {
       return;
     }
 
-    // Obter o UUID do usuário do Keycloak
     const createUserUUID = await getUUIDbyUsername(keycloakUserData.username);
-
-    console.log("IDD", createUserUUID);
-
-    // Criação de perfil no spring
 
     const dictUserType: typeof data.userType = {
       ADMIN: 1,
@@ -54,7 +60,7 @@ export default function CreateUser() {
       firstName: data.firstName,
       lastName: data.lastName,
       keycloakUserId: createUserUUID,
-      imageUrl: "",
+      imageUrl: imageUrl,
       roleIds: [dictUserType[data.userType]],
     };
 
@@ -72,6 +78,18 @@ export default function CreateUser() {
     <div>
       <PageTitle>Cadastrar Usuário</PageTitle>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <Controller
+          name="image"
+          control={control}
+          render={({ field }) => (
+            <ImageField
+              control={control}
+              accept="image/*"
+              {...field}
+            />
+          )}
+        />
+        
         <Input
           label="Nome"
           {...register("firstName", { required: "O nome é obrigatório" })}
