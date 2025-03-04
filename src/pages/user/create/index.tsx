@@ -88,7 +88,7 @@ export default function CreateUser() {
           render={({ field }) => (
             <ImageField
               control={control}
-              accept="image/*"
+              accept="image/jpg"
               {...field}
             />
           )}
