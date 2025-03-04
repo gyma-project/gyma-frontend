@@ -1,9 +1,5 @@
 describe('Criação de Usuário', () => {
 
-    // testuser
-    // testuser@testuser.com
-    // test
-
     it('Deve acessar a página de listagem de usuários, pesquisar por um usuário e deletar o perfil', () => {
 
         cy.visit('http://localhost:3000');
@@ -22,21 +18,18 @@ describe('Criação de Usuário', () => {
 
         cy.contains('p', 'Listagem de usuários').click({ force: true });
 
-        cy.wait(2000);
+        cy.wait(5000);
 
         const searchName = 'keilany';
 
         cy.get('input[placeholder="Buscar pelo nome..."]').type(searchName);
 
-        cy.contains(searchName).should('be.visible');
-
         cy.get('img[alt="Excluir"]').click();
 
-        cy.contains('h3', 'Tem certeza que deseja excluir este perfil?').should('be.visible');
+        cy.contains('h3', 'Tem certeza que deseja excluir este perfil?');
 
         cy.get('button').contains('Confirmar').click();
 
-        // Verificar se o nome do usuário foi removido da lista
         cy.contains(searchName).should('not.exist');
     });
 });

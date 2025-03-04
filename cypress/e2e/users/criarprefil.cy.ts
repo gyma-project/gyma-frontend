@@ -1,8 +1,4 @@
-describe('Criação de Usuário', () => {
-
-    // testuser
-    // testuser@testuser.com
-    // test
+describe('Criação de Usuário com Login', () => {
 
     it('Deve acessar a página de criação de usuário após fazer login e criar um perfil', () => {
 

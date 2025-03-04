@@ -1,9 +1,5 @@
 describe('Criação de Usuário', () => {
 
-    // testuser
-    // testuser@testuser.com
-    // test
-
     it('Deve acessar a página de listagem de usuários após fazer login e pesquisar por: usuário que não existe', () => {
 
         cy.visit('http://localhost:3000');
