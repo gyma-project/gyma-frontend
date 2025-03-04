@@ -43,7 +43,7 @@ export default function ImageField({
             className="rounded-full"
           />
         ) : (
-          <Image src="icons/icon-add-image.svg" alt="" width={26} height={23} />
+          <Image src="/icons/icon-add-image.svg" alt="" width={26} height={23} />
         )}
       </div>
       <p className="font-[14px] text-zinc-600">Alterar imagem de perfil</p>
