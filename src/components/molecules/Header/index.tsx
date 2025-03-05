@@ -8,7 +8,7 @@ export default function Header() {
 
   return (
     <div className="h-[88px] w-full shadow-lg flex justify-center items-center">
-      <h1 className="text-[26px] text-red-500 font-bold drop-shadow-lg curso" onClick={() => router.push("/")}>
+      <h1 className="text-[26px] text-red-500 font-bold drop-shadow-lg cursor-pointer" onClick={() => router.push("/")}>
         GYMA
       </h1>
       {session.status == "authenticated" ? (
