@@ -16,6 +16,24 @@ export default function Profile({ slug }: ProfileProps) {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  useEffect(() => {
+    setLoading(true); // Define o estado de carregamento como true
+    getUUIDbyUsername(slug)
+      .then((uuid) => {
+        console.log('UUID:', uuid);
+        return getProfileByUuid(uuid);
+      })
+      .then((profileData) => {
+        setProfile(profileData);
+      })
+      .catch((error) => {
+        console.error('Erro ao obter o UUID ou perfil:', error);
+      })
+      .finally(() => {
+        setLoading(false); // Finaliza o estado de carregamento
+      });
+  }, [slug]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
