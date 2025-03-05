@@ -1,7 +1,18 @@
 import { useState, useRef, ChangeEvent } from "react";
 import Image from "next/image";
+import { Controller, UseFormReturn, FieldValues } from "react-hook-form";
 
-export default function ImageField() {
+interface ImageFieldProps {
+  control: UseFormReturn<FieldValues>['control'];
+  name: string;
+  accept?: string;
+}
+
+export default function ImageField({
+  control,
+  name,
+  accept = "image/*",
+}: ImageFieldProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -32,16 +43,29 @@ export default function ImageField() {
             className="rounded-full"
           />
         ) : (
-          <Image src="icons/icon-add-image.svg" alt="" width={26} height={23} />
+          <Image src="/icons/icon-add-image.svg" alt="" width={26} height={23} />
         )}
       </div>
       <p className="font-[14px] text-zinc-600">Alterar imagem de perfil</p>
-      <input
-        ref={inputRef}
-        type="file"
-        className="hidden"
-        accept="image/*"
-        onChange={handleImageChange}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => (
+          <input
+            {...field}
+            ref={(e) => {
+              inputRef.current = e;
+              field.ref(e);
+            }}
+            type="file"
+            className="hidden"
+            accept={accept}
+            onChange={(e) => {
+              handleImageChange(e);
+              field.onChange(e);
+            }}
+          />
+        )}
       />
     </div>
   );
