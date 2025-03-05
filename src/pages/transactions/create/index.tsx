@@ -45,7 +45,6 @@ export default function TransactionsCreate() {
         <Input
           {...register("price", {
             required: "O valor é obrigatório",
-            min: { value: 1, message: "O valor deve ser maior que 0" },
           })}
           label="Valor"
           placeholder="Digite o valor da transação..."

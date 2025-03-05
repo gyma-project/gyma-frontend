@@ -25,7 +25,7 @@ export default function App({
       <div className="flex flex-col min-h-[100vh]">
         <Header />
         <FloatingMenu />
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-8 w-full max-w-[1200px] m-auto">
           <Component {...pageProps} />
         </main>
         <Footer />

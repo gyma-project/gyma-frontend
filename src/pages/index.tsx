@@ -1,3 +1,4 @@
+import TransactionComponent from "@/components/atoms/TransactionComponent";
 import UserCard from "@/components/atoms/UserCard";
 import MenuList from "@/components/molecules/MenuList";
 import {
@@ -9,8 +10,6 @@ import { signIn, useSession } from "next-auth/react";
 
 export default function Home() {
   const session = useSession();
-
-  console.log(session);
 
   return (
     <div className="flex flex-col gap-5">
