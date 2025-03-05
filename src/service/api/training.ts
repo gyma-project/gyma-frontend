@@ -98,3 +98,68 @@ export const getTrainingSheetsByStudent = async (studentKeycloakId: string) => {
     throw error;
   }
 };
+
+export const getTrainingRecords = async (date: Date) => {
+  try {
+    const formattedDate = date.toISOString().split("T")[0]; // Formata para YYYY-MM-DD
+    const response = await axiosInstance.get(`/training-records?startDate=${formattedDate}&endDate=${formattedDate}`);
+
+    if (response.status !== 200) {
+      throw new Error("Erro ao buscar os registros de treino");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar os registros de treino:", error);
+    throw error;
+  }
+};
+
+export const getTrainingTimesByDay = async (dayName: string) => {
+  try {
+      const response = await axiosInstance.get(`/training-times`, {
+          params: { dayName, active: true, size: 19 }
+      });
+
+      if (response.status !== 200) {
+          throw new Error("Erro ao buscar os horários de treino");
+      }
+
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar os horários de treino:", error);
+      throw error;
+  }
+};
+
+export const getTrainingRecordsByTime = async (trainingTimeId: number, startDate: string, endDate: string) => {
+  try {
+    const response = await axiosInstance.get(`/training-records`, {
+      params: { trainingTimeId, startDate, endDate, size: 20 }
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Erro ao buscar os registros de treino");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar os registros de treino:", error);
+    throw error;
+  }
+};
+
+export const updateTrainingTime = async (id: string, trainingTimeData: { active: boolean, trainerId: string, studentsLimit: number, updateBy: string }) => {
+  try {
+    const response = await axiosInstance.put(`training-times/${id}`, trainingTimeData);
+
+    if (response.status !== 200) {
+      throw new Error("Erro ao atualizar o horário de treino");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao atualizar o horário de treino:", error);
+    throw error;
+  }
+};

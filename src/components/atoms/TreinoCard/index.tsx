@@ -60,8 +60,6 @@ export default function TrainingSheetCard() {
     const { data: session } = useSession();
     const router = useRouter();
 
-    console.log(session);
-
     const isStudent = session?.user?.profile?.roles?.some(role => role.name === "STUDENT");
 
     useEffect(() => {
@@ -111,11 +109,6 @@ export default function TrainingSheetCard() {
     const openViewModal = (sheet: TrainingSheet) => {
         setSelectedSheet(sheet);
         setShowViewModal(true);
-    };
-
-    const openEditModal = (sheet: TrainingSheet) => {
-        setSelectedSheet(sheet);
-        setShowEditModal(true);
     };
 
     const updateTrainingSheet = async (id: number, updatedData: Partial<TrainingSheet>) => {

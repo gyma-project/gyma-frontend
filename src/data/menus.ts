@@ -7,14 +7,9 @@ const NAVLIST_usuarios: MenuItemProps[] = [
     onClickRedirectUrl: "/user/create",
   },
   {
-    label: "Listagem de alunos",
+    label: "Listagem de usuários",
     icon: "icons/icon-list-students.svg",
-    onClickRedirectUrl: "/user/list-students",
-  },
-  {
-    label: "Listagem de treinadores",
-    icon: "icons/icon-lists-trainers.svg",
-    onClickRedirectUrl: "/user/list-trainers",
+    onClickRedirectUrl: "/user/list",
   },
 ];
 
