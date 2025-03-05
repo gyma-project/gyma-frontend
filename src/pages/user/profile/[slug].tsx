@@ -3,7 +3,7 @@
 import Button from '@/components/atoms/Button';
 import PageTitle from '@/components/atoms/PageTitle';
 import { getUUIDbyUsername } from '@/service/api/keycloak';
-import { getProfileByUuid } from '@/service/api/profiles';
+import { getProfileByUsername, getProfileByUuid } from '@/service/api/profiles';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -18,16 +18,12 @@ export default function Profile({ slug }: ProfileProps) {
 
   useEffect(() => {
     setLoading(true);
-    getUUIDbyUsername(slug)
-      .then((uuid) => {
-        console.log('UUID:', uuid);
-        return getProfileByUuid(uuid);
-      })
+    getProfileByUsername(slug)
       .then((profileData) => {
         setProfile(profileData);
       })
       .catch((error) => {
-        console.error('Erro ao obter o UUID ou perfil:', error);
+        console.error('Erro ao obter perfil:', error);
       })
       .finally(() => {
         setLoading(false);
