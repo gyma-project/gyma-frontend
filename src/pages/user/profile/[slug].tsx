@@ -2,8 +2,7 @@
 
 import Button from '@/components/atoms/Button';
 import PageTitle from '@/components/atoms/PageTitle';
-import { getUUIDbyUsername } from '@/service/api/keycloak';
-import { getProfileByUsername, getProfileByUuid } from '@/service/api/profiles';
+import { getProfileByUsername } from '@/service/api/profiles';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
