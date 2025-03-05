@@ -10,7 +10,7 @@ export default function FloatingMenu() {
     <>
       {!isOpen && (
         <div
-          className="fixed left-[-8px] hover:left-0 transition-all top-[50%] translate-y-[-50%] bg-red-100 w-[40px] h-[100px] rounded-r-3xl flex items-center z-40 cursor-pointer max-md:hidden  active:shadow-md"
+          className="fixed left-[-8px] hover:left-0 transition-all top-[50%] translate-y-[-50%] bg-red-100 opacity-50 hover:opacity-100 w-[40px] h-[100px] rounded-r-3xl flex items-center z-40 cursor-pointer max-md:hidden  active:shadow-md"
           onClick={() => setIsOpen(!isOpen)}
         >
           <Image

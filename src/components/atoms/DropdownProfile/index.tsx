@@ -1,9 +1,12 @@
+import { Session } from "@auth/core/types";
 import Image from "next/image";
 import { useState } from "react";
 
 interface DropdownProfileProps {
   handleLogin: () => void;
-  session: any;
+  session: {
+    data: Session
+  };
 }
 
 export default function DropdownProfile({
@@ -18,7 +21,7 @@ export default function DropdownProfile({
         className="text-red-500 flex items-center gap-2 cursor-pointer"
         onClick={() => setOpen(!isOpen)}
       >
-        <span>Olá, {session.data.user?.name.split(" ")[0]}</span>
+        <span>Olá, {session.data.user?.name ? session.data.user?.name.split(" ")[0] : "Usuário"}</span>
         <span className="text-2xl">👋</span>
       </p>
       {isOpen && (
@@ -45,7 +48,7 @@ export default function DropdownProfile({
             <div className="flex flex-col">
               <div className="py-3 px-1 flex items-center gap-2 cursor-pointer hover:bg-red-100 rounded-lg transition-all">
                 <Image
-                  src="icons/icon-user.svg"
+                  src="/icons/icon-user.svg"
                   alt="Icone de usuário"
                   width={28}
                   height={28}
@@ -54,7 +57,7 @@ export default function DropdownProfile({
               </div>
               <div className="py-3 px-1 flex items-center gap-2 cursor-pointer hover:bg-red-100 rounded-lg transition-all">
                 <Image
-                  src="icons/icon-help.svg"
+                  src="/icons/icon-help.svg"
                   alt="Icone de ajuda"
                   width={28}
                   height={28}

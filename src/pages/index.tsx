@@ -1,9 +1,4 @@
-import FloatingMenu from "@/components/atoms/FloatingMenu";
-import ImageField from "@/components/atoms/ImageField";
-import Input from "@/components/atoms/Input";
-import MenuItem, { MenuItemProps } from "@/components/atoms/MenuItem";
-import SearchField from "@/components/atoms/SearchField";
-import Textbox from "@/components/atoms/Textbox";
+import TransactionComponent from "@/components/atoms/TransactionComponent";
 import UserCard from "@/components/atoms/UserCard";
 import MenuList from "@/components/molecules/MenuList";
 import {
@@ -15,8 +10,6 @@ import { signIn, useSession } from "next-auth/react";
 
 export default function Home() {
   const session = useSession();
-
-  console.log(session);
 
   return (
     <div className="flex flex-col gap-5">

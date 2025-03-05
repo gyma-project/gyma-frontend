@@ -14,7 +14,7 @@ export default function Input({
   ...otherInputProps
 }: InputProps) {
   const getErrorMessage = (
-    error: string | FieldError | undefined
+    error: string | FieldError | undefined,
   ): string | undefined => {
     if (typeof error === "string") {
       return error;
@@ -31,11 +31,11 @@ export default function Input({
     <div>
       <p className="mb-2">{label}:</p>
       <input
+        type="text"
         {...otherInputProps}
         className={`w-full ${
           width && `w-[${width}]`
         } border border-red-500 text-[12px] rounded-3xl py-2 px-5 outline-none`}
-        type="text"
       />
       {errorMessage && (
         <span className="text-red-500 text-xs mt-1">{errorMessage}</span>

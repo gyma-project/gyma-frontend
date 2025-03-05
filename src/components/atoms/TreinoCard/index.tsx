@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import FiltrarPorNome from "../FiltrarPorNome";
-import { getTrainingSheets, deleteTrainingSheet } from "@/service/api/training-sheets";
+import { getAllTrainingSheets, deleteTrainingSheet, getTrainingSheetsByStudent } from "@/service/api/training";
 import axiosInstance from "@/service/axios";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router'; 
+
 
 interface Role {
     id: number;
@@ -54,16 +57,37 @@ export default function TrainingSheetCard() {
     const [showViewModal, setShowViewModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedSheet, setSelectedSheet] = useState<TrainingSheet | null>(null);
+    const { data: session } = useSession();
+    const router = useRouter();
+
+    console.log(session);
+
+    const isStudent = session?.user?.profile?.roles?.some(role => role.name === "STUDENT");
 
     useEffect(() => {
         const fetchTrainingSheets = async () => {
-            const data = await getTrainingSheets();
-            if (data) {
-                setTrainingSheets(data);
+            if (session?.user?.profile?.roles) {
+                const isTrainerOrAdmin = session.user.profile.roles.some(role => role.name === "ADMIN" || role.name === "TRAINER");
+
+                if (isTrainerOrAdmin) {
+                    // Requisição para ADMIN ou TRAINER
+                    const data = await getAllTrainingSheets();  // Assume que essa função já existe no seu código
+                    setTrainingSheets(data.content || []);
+                } else if (isStudent) {
+                    const studentKeycloakId = session.user.uuid;  // UUID do estudante da session
+                    if (studentKeycloakId) {
+                        const data = await getTrainingSheetsByStudent(studentKeycloakId);
+                        setTrainingSheets(data.content || []);
+                    }
+                }
             }
         };
+
         fetchTrainingSheets();
-    }, []);
+    }, [session, isStudent]);
+
+      
+    
 
     const confirmDelete = (sheet: TrainingSheet) => {
         setSelectedSheet(sheet);
@@ -72,7 +96,7 @@ export default function TrainingSheetCard() {
 
     const handleDelete = async () => {
         if (selectedSheet) {
-            const success = await deleteTrainingSheet(selectedSheet.id);
+            const success = await deleteTrainingSheet(selectedSheet.id.toString()); // Converte ID para string
             if (success) {
                 setTrainingSheets((prev) => prev.filter((sheet) => sheet.id !== selectedSheet.id));
             }
@@ -80,6 +104,9 @@ export default function TrainingSheetCard() {
         setShowDeleteModal(false);
         setSelectedSheet(null);
     };
+    
+
+    
 
     const openViewModal = (sheet: TrainingSheet) => {
         setSelectedSheet(sheet);
@@ -103,13 +130,13 @@ export default function TrainingSheetCard() {
 
     const handleEdit = async () => {
         if (selectedSheet) {
-            const updatedSheet = { ...selectedSheet, name: "Novo Nome" }; // Exemplo de atualização
-            const success = await updateTrainingSheet(updatedSheet.id, updatedSheet); // Passando id e dados
+            const updatedSheet = { ...selectedSheet, name: "Novo Nome" };
+            const success = await updateTrainingSheet(updatedSheet.id, updatedSheet); // Converte ID para string
             if (success) {
                 setTrainingSheets((prev) =>
                     prev.map((sheet) => (sheet.id === updatedSheet.id ? updatedSheet : sheet))
                 );
-                setSelectedSheet(updatedSheet); // Atualizando diretamente o selectedSheet
+                setSelectedSheet(updatedSheet);
             }
         }
         setShowEditModal(false);
@@ -123,11 +150,28 @@ export default function TrainingSheetCard() {
             .includes(search.toLowerCase())
     );
 
+    const handleEditRedirect = (sheet: TrainingSheet) => {
+        router.push(`/training/${sheet.id}/update`); // Redireciona para a página de atualização
+    };
+
+    const handleCreateRedirect = () => {
+        router.push('/training/create'); // Adiciona a navegação para a página de criação
+    };
+
     return (
         <div className="p-6 min-h-screen">
             <div className="mb-6">
                 <FiltrarPorNome search={search} setSearch={setSearch} />
             </div>
+
+            <div className="mb-6">
+                <button
+                    onClick={handleCreateRedirect}
+                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-800"
+                >
+                    Criar Novo Treino
+                </button>
+            </div>  
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredTrainingSheets.map((sheet) => (
@@ -154,28 +198,32 @@ export default function TrainingSheetCard() {
 
                         <div className="flex-1 max-w-[240px]">
                             <h2 className="text-lg font-semibold text-red-500">{sheet.name}</h2>
-                            <p>Descrição:{sheet.description}</p>
+                            <p>{sheet.description}</p>
                         </div>
 
                         <div className="mt-4 flex flex-col space-y-5">
                             <img
-                                src="/icons/olho.png"
+                                src="/icons/icon-eye.svg"
                                 alt="Visualizar"
                                 className="w-5 h-5 cursor-pointer"
                                 onClick={() => openViewModal(sheet)}
                             />
-                            <img
-                                src="/icons/lapis.png"
-                                alt="Editar"
-                                className="w-5 h-5 cursor-pointer"
-                                onClick={() => openEditModal(sheet)}
-                            />
-                            <img
-                                src="/icons/lixeira.png"
-                                alt="Excluir"
-                                className="w-5 h-5 cursor-pointer"
-                                onClick={() => confirmDelete(sheet)}
-                            />
+                            {!isStudent && (
+                                <>
+                                    <img
+                                        src="/icons/icon-edit.svg"
+                                        alt="Editar"
+                                        className="w-5 h-5 cursor-pointer"
+                                        onClick={() => handleEditRedirect(sheet)} // Chama a função de redirecionamento
+                                    />
+                                    <img
+                                        src="/icons/icon-trash.svg"
+                                        alt="Excluir"
+                                        className="w-5 h-5 cursor-pointer"
+                                        onClick={() => confirmDelete(sheet)}
+                                    />
+                                </>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -283,4 +331,3 @@ export default function TrainingSheetCard() {
         </div>
     );
 }
-

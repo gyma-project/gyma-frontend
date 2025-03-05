@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import Select from "@/components/atoms/Select";
 
 export default function TransactionsCreate() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const session = useSession();
 
@@ -29,6 +29,7 @@ export default function TransactionsCreate() {
     try {
       await createTransaction(transactionData);
       alert("Transação cadastrada com sucesso!");
+      reset();
     } catch (error) {
       if (error instanceof Error) {
         alert("Erro ao cadastrar transação: " + error.message);
@@ -44,7 +45,6 @@ export default function TransactionsCreate() {
         <Input
           {...register("price", {
             required: "O valor é obrigatório",
-            min: { value: 1, message: "O valor deve ser maior que 0" },
           })}
           label="Valor"
           placeholder="Digite o valor da transação..."

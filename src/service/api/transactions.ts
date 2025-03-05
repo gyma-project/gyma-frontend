@@ -20,3 +20,16 @@ export const createTransaction = async (transactionData: TransactionData) => {
     return [];
   }
 };
+
+export const getTransactions = async () => {
+  try {
+    const response = await axiosInstance.get("/transactions");
+    if (response.status !== 200) {
+      throw new Error("Erro ao listar transações");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Erro:", error);
+    return [];
+  }
+};
