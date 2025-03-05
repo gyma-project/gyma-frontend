@@ -118,7 +118,7 @@ export const getTrainingRecords = async (date: Date) => {
 export const getTrainingTimesByDay = async (dayName: string) => {
   try {
       const response = await axiosInstance.get(`/training-times`, {
-          params: { dayName, active: true, size: 19 }
+          params: { dayName, size: 19 }
       });
 
       if (response.status !== 200) {
@@ -163,3 +163,19 @@ export const updateTrainingTime = async (id: string, trainingTimeData: { active:
     throw error;
   }
 };
+
+export const toggleTrainingTimeActive = async (id: string) => {
+  try {
+    const response = await axiosInstance.post(`/training-times/${id}/toggle-active`);
+
+    if (response.status !== 200) {
+      throw new Error("Erro ao ativar/desativar o horário de treino");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao ativar/desativar o horário de treino:", error);
+    throw error;
+  }
+};
+

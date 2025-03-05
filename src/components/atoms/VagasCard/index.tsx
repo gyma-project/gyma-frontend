@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import FiltroHorario from "../FiltroHorario";
-import { getTrainingTimesByDay, getTrainingRecordsByTime, updateTrainingTime } from "@/service/api/training";
+import { getTrainingTimesByDay, getTrainingRecordsByTime, updateTrainingTime, toggleTrainingTimeActive } from "@/service/api/training";
 import SearchAutoComplete from "../SearchAutoComplete";
 import { Role } from "@/service/api/profiles";
 import { useSession } from "next-auth/react";
@@ -12,6 +12,7 @@ interface VagasCardProps {
     active: boolean;
     trainerId: string;
     studentsLimit: number;
+    vagasRestantes: number;
 }
 
 export default function ListaVagas() {
@@ -33,24 +34,24 @@ export default function ListaVagas() {
             try {
                 const today = new Date();
                 const dayName = today.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase();
-
+    
                 const response = await getTrainingTimesByDay(dayName);
-
+    
                 if (!response || !Array.isArray(response.content)) {
                     console.error("Resposta inesperada da API:", response);
                     return;
                 }
-
+    
                 const formattedVagas = await Promise.all(response.content.map(async (record: any) => {
-                    const startTime = record.startTime.substring(0, 5);
+                    const startTime = record.startTime.substring(0, 5); // Pega a parte do horário
                     const endTime = record.endTime.substring(0, 5);
-
+    
                     const todayFormatted = today.toISOString().split("T")[0];
                     const trainingRecords = await getTrainingRecordsByTime(record.id, todayFormatted, todayFormatted);
-                    
+    
                     const quantidadeAgendamentos = trainingRecords.content.length;
                     const vagasRestantes = record.studentsLimit - quantidadeAgendamentos;
-
+    
                     return {
                         horario: `${startTime} às ${endTime}`,
                         capacidadeTotal: record.studentsLimit,
@@ -59,11 +60,19 @@ export default function ListaVagas() {
                         active: record.active,
                         trainerId: record.trainerId,
                         studentsLimit: record.studentsLimit,
+                        startTime, // Adiciona o startTime para facilitar a ordenação
                     };
                 }));
-                
-                setVagas(formattedVagas);
-                setHorariosDisponiveis(formattedVagas.map((vaga) => vaga.horario));
+    
+                // Ordena as vagas pela hora de início (startTime)
+                const sortedVagas = formattedVagas.sort((a, b) => {
+                    if (a.startTime < b.startTime) return -1;
+                    if (a.startTime > b.startTime) return 1;
+                    return 0;
+                });
+    
+                setVagas(sortedVagas); // Atualiza o estado com a lista ordenada
+                setHorariosDisponiveis(sortedVagas.map((vaga) => vaga.horario));
             } catch (error) {
                 console.error("Erro ao buscar horários disponíveis:", error);
             }
@@ -71,6 +80,7 @@ export default function ListaVagas() {
     
         fetchVagas();
     }, []);
+    
 
     const vagasFiltradas = filtroHorario
         ? vagas.filter((vaga) => vaga.horario === filtroHorario)
@@ -133,7 +143,15 @@ export default function ListaVagas() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {vagasFiltradas.map((vaga, index) => (
-                    <VagasCard key={index} {...vaga} usuarioEhAluno={usuarioEhAluno} openModal={openModal} />
+                    <VagasCard 
+                        key={index} 
+                        {...vaga} 
+                        usuarioEhAluno={usuarioEhAluno} 
+                        usuarioEhAdministrador={usuarioEhAdministrador} 
+                        usuarioEhTrainer={usuarioEhTrainer} 
+                        openModal={openModal} 
+                        setVagas={setVagas} 
+                    />
                 ))}
             </div>
 
@@ -187,58 +205,103 @@ export default function ListaVagas() {
 
 interface VagasCardPropsWithAluno extends VagasCardProps {
     usuarioEhAluno: boolean;
+    usuarioEhAdministrador: boolean;
+    usuarioEhTrainer: boolean;
     openModal: (vaga: VagasCardProps) => void;
+    setVagas: React.Dispatch<React.SetStateAction<VagasCardProps[]>>;
 }
 
-function VagasCard({ horario, capacidadeTotal, vagasRestantes, usuarioEhAluno, openModal }: VagasCardPropsWithAluno) {
+function VagasCard({
+    horario,
+    capacidadeTotal,
+    vagasRestantes,
+    usuarioEhAluno,
+    openModal,
+    id,
+    active,
+    trainerId,
+    studentsLimit,
+    setVagas,
+    usuarioEhAdministrador,
+    usuarioEhTrainer
+}: VagasCardPropsWithAluno) {
+
+    console.log("1")
+    console.log(usuarioEhAdministrador);
+    console.log("2")
+
+    console.log(usuarioEhAluno);
+    console.log("3")
+
+    console.log(usuarioEhTrainer);
+
+
     return (
-        <div className="bg-red-50 rounded-xl shadow-lg w-full border-red-400 p-3">
+        <div
+            className={`bg-${active ? 'red-50' : 'gray-200'} rounded-xl shadow-lg w-full border-${active ? 'red-400' : 'gray-400'} p-3`}
+        >
             <div className="flex justify-between p-4 w-full">
                 <div>
-                    <h2 className="text-lg font-semibold text-red-500">{horario}</h2>
+                    <h2 className={`text-lg font-semibold ${active ? 'text-red-500' : 'text-gray-500'}`}>{horario}</h2>
                     {vagasRestantes === 0 ? (
                         <button className="bg-red-500 text-white py-2 mt-2 hover:bg-gray-600 rounded-xl transition w-full cursor-not-allowed" disabled>
                             Lotado
                         </button>
-                    ) : (
+                    ) : active ? (
                         <p className="text-sm mt-1 flex items-center">
-                            <img 
-                                src="/icons/icon-people.svg" 
-                                alt="Ícone" 
+                            <img
+                                src="/icons/icon-people.svg"
+                                alt="Ícone"
                                 className="mr-2 w-4 h-4"
                             />
                             <span>{vagasRestantes} / {capacidadeTotal} pessoas</span>
                         </p>
+                    ) : (
+                        <p className="text-sm mt-1 text-gray-500">Não disponível</p>
                     )}
                 </div>
 
-                
                 <div className="flex flex-col items-center space-y-3 text-red-500">
-                    <img 
-                        src="/icons/icon-eye.svg" 
-                        alt="Visualizar" 
-                        style={{ width: 18, height: 18 }} 
+                    <img
+                        src="/icons/icon-eye.svg"
+                        alt="Visualizar"
+                        style={{ width: 18, height: 18 }}
                     />
-                    {!usuarioEhAluno && (
+                    {(usuarioEhAdministrador || usuarioEhTrainer) && (
                         <>
+                            {/* Icone de Editar para administradores e treinadores */}
                             <img
                                 src="/icons/icon-edit.svg"
                                 alt="Editar"
                                 style={{ width: 18, height: 18 }}
                                 className="cursor-pointer"
-                                onClick={() => openModal({ horario, capacidadeTotal, vagasRestantes, id: "", active: true, trainerId: "", studentsLimit: 0 })} 
+                                onClick={() => openModal({ horario, capacidadeTotal, vagasRestantes, id, active, trainerId, studentsLimit })}
                             />
-                            <img 
-                                src="/icons/icon-trash.svg" 
-                                alt="Excluir" 
-                                style={{ width: 18, height: 18 }} 
+                            {/* Icone de Desativar Horário para administradores ou treinadores */}
+                            <img
+                                src="/icons/icon-disable.svg"
+                                alt="Desativar Horário"
+                                title="Desativar Horário"
+                                style={{ width: 20, height: 20 }}
+                                className="cursor-pointer"
+                                onClick={async () => {
+                                    try {
+                                        await toggleTrainingTimeActive(id);
+                                        // Atualiza o estado local para refletir a mudança de ativo/inativo
+                                        setVagas((prevVagas) => prevVagas.map((vaga) =>
+                                            vaga.id === id ? { ...vaga, active: !vaga.active } : vaga
+                                        ));
+                                    } catch (error) {
+                                        console.error("Erro ao ativar/desativar o horário:", error);
+                                    }
+                                }}
                             />
                         </>
                     )}
                 </div>
             </div>
 
-            {vagasRestantes > 0 && usuarioEhAluno && (
+            {vagasRestantes > 0 && usuarioEhAluno && active && (
                 <button className="bg-red-500 text-white py-2 mt-2 hover:bg-red-600 rounded-xl transition w-full">
                     Agendar
                 </button>
@@ -246,3 +309,4 @@ function VagasCard({ horario, capacidadeTotal, vagasRestantes, usuarioEhAluno, o
         </div>
     );
 }
+
