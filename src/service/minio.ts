@@ -6,24 +6,23 @@ const uploadImageToMinIO = async (image: File, userUUID: string) => {
   const MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY;
   const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
 
-  const formData = new FormData();
-  formData.append("file", image);
+  const fileExtension = image.name.split('.').pop();
+  const fileName = `${userUUID}.${fileExtension}`;
 
   try {
     const response = await axios.put(
-      `${MINIO_URL}/${BUCKET_NAME}/${userUUID}.jpg`,
-      formData, 
+      `${MINIO_URL}/${BUCKET_NAME}/${fileName}`,
+      image, 
       {
         headers: {
           Authorization: `Bearer ${MINIO_ACCESS_KEY}:${MINIO_SECRET_KEY}`, 
-          "Content-Type": "multipart/form-data", 
+          "Content-Type": image.type 
         },
       }
     );
 
-
     if (response.status === 200) {
-      return `${MINIO_URL}/${BUCKET_NAME}/${userUUID}.jpg`;
+      return `${MINIO_URL}/${BUCKET_NAME}/${fileName}`;
     } else {
       throw new Error("Falha ao enviar imagem para o MinIO");
     }
