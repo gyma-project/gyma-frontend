@@ -24,3 +24,18 @@ export const createProfile = async (profileData: ProfileData) => {
     return [];
   }
 };
+
+export const getProfileByUuid = async (uuid: string) => {
+  try {
+    const response = await axiosInstance.get(`/profiles?keycloakId=${uuid}`);
+
+    if (response.status !== 200 && response.status !== 201) {
+      throw new Error("Erro ao buscar perfil");
+    }
+
+    return response.data.content[0];
+  } catch (error) {
+    console.error("Erro:", error);
+    return [];
+  }
+};
