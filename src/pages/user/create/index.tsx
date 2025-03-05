@@ -6,12 +6,15 @@ import ImageField from "@/components/atoms/ImageField";
 import { createKeycloakUser, getUUIDbyUsername } from "@/service/api/keycloak";
 import { createProfile, ProfileData } from "@/service/api/profiles";
 import { useSession } from "next-auth/react";
-import { useForm, Controller } from "react-hook-form";
-import uploadImageToMinIO from "@/service/minio";
+import { useForm } from "react-hook-form";
+import uploadImageToMinIO from "@/service/minio"; 
+import { useState } from "react";
 
 export default function CreateUser() {
-  const { register, handleSubmit, reset, control } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const session = useSession();
+
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const onSubmit = async (data: any) => {
     if (!session.data || !session.data.user?.uuid) {
@@ -41,9 +44,9 @@ export default function CreateUser() {
 
     // Salvar imagem de perfil - minio
     let imageUrl = "";
-    if (data.image && data.image[0]) {
+    if (selectedImage) {
       try {
-        imageUrl = await uploadImageToMinIO(data.image[0], createUserUUID); 
+        imageUrl = await uploadImageToMinIO(selectedImage, createUserUUID);
       } catch (error) {
         console.error("Erro ao enviar a imagem para o MinIO:", error);
         alert("Erro ao enviar imagem para o MinIO");
@@ -73,6 +76,7 @@ export default function CreateUser() {
     if (newProfile) {
       alert("Perfil criado com sucesso!");
       reset();
+      setSelectedImage(null);
     } else {
       alert("Erro ao criar o perfil");
     }
@@ -82,18 +86,11 @@ export default function CreateUser() {
     <div>
       <PageTitle>Cadastrar Usuário</PageTitle>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        <Controller
-          name="image"
-          control={control}
-          render={({ field }) => (
-            <ImageField
-              control={control}
-              accept="image/jpg"
-              {...field}
-            />
-          )}
+        <ImageField
+          accept="image/jpg"
+          onImageSelect={(file) => setSelectedImage(file)}
         />
-        
+
         <Input
           label="Nome"
           {...register("firstName", { required: "O nome é obrigatório" })}

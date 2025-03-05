@@ -1,17 +1,16 @@
 import { useState, useRef, ChangeEvent } from "react";
 import Image from "next/image";
-import { Controller, UseFormReturn, FieldValues } from "react-hook-form";
 
 interface ImageFieldProps {
-  control: UseFormReturn<FieldValues>['control'];
-  name: string;
+  name?: string;
   accept?: string;
+  onImageSelect?: (file: File | null) => void;
 }
 
 export default function ImageField({
-  control,
   name,
   accept = "image/*",
+  onImageSelect,
 }: ImageFieldProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -21,10 +20,15 @@ export default function ImageField({
   };
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0] || null;
+    
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setSelectedImage(imageUrl);
+      onImageSelect?.(file);
+    } else {
+      setSelectedImage(null);
+      onImageSelect?.(null);
     }
   };
 
@@ -38,34 +42,23 @@ export default function ImageField({
           <Image
             src={selectedImage}
             alt="Imagem de perfil"
-            objectFit="cover"
-            layout="fill"
-            className="rounded-full"
+            fill
+            className="rounded-full object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
           <Image src="/icons/icon-add-image.svg" alt="" width={26} height={23} />
         )}
       </div>
       <p className="font-[14px] text-zinc-600">Alterar imagem de perfil</p>
-      <Controller
+
+      <input
+        ref={inputRef}
+        type="file"
+        className="hidden"
+        accept={accept}
+        onChange={handleImageChange}
         name={name}
-        control={control}
-        render={({ field }) => (
-          <input
-            {...field}
-            ref={(e) => {
-              inputRef.current = e;
-              field.ref(e);
-            }}
-            type="file"
-            className="hidden"
-            accept={accept}
-            onChange={(e) => {
-              handleImageChange(e);
-              field.onChange(e);
-            }}
-          />
-        )}
       />
     </div>
   );
