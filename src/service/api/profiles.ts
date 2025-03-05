@@ -65,9 +65,9 @@ export const getProfiles = async (role?: Role, username?: string) => {
   }
 };
 
-export const getProfileByUuid = async (uuid: string) => {
+export const getProfileByUsername = async (username: string) => {
   try {
-    const response = await axiosInstance.get(`/profiles?keycloakId=${uuid}`);
+    const response = await axiosInstance.get(`/profiles?username=${username}`);
 
     if (response.status !== 200 && response.status !== 201) {
       throw new Error("Erro ao buscar perfil");

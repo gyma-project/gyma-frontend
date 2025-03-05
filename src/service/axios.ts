@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getSession } from "next-auth/react"; // Importa getSession
+import { getSession } from "next-auth/react";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8081/api/v1",
@@ -11,11 +11,12 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     const session = await getSession();
-
     if (session && session.accessToken) {
       config.headers["Authorization"] = `Bearer ${session.accessToken}`;
     } else {
       console.log("Nenhum token encontrado na sessão.");
+      window.location.href = "/";
+      return Promise.reject("Usuário não autenticado");
     }
 
     return config;
@@ -36,11 +37,12 @@ const axiosKeycloak = axios.create({
 axiosKeycloak.interceptors.request.use(
   async (config) => {
     const session = await getSession();
-
     if (session && session.accessToken) {
       config.headers["Authorization"] = `Bearer ${session.accessToken}`;
     } else {
       console.log("Nenhum token encontrado na sessão.");
+      window.location.href = "/";
+      return Promise.reject("Usuário não autenticado");
     }
 
     return config;
