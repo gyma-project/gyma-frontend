@@ -3,7 +3,7 @@ import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import PageTitle from "@/components/atoms/PageTitle";
 import Textbox from "@/components/atoms/Textbox";
-import { createTrainingSession } from "@/service/api/training";
+import { createTrainingSheet } from "@/service/api/training";
 import { useSession } from "next-auth/react";
 import SearchAutoComplete from "@/components/atoms/SearchAutoComplete";
 import MultipleAutoComplete from "@/components/atoms/MultipleAutoComplete";
@@ -42,7 +42,7 @@ export default function TrainingCreate() {
     console.log("Enviando payload:", treinoData);
 
     try {
-      await createTrainingSession(treinoData);
+      await createTrainingSheet(treinoData);
       alert("Ficha de treino cadastrada com sucesso!");
       reset();
     } catch (error) {

@@ -83,3 +83,18 @@ export const deleteTrainingSheet = async (id: string) => {
     throw error;
   }
 };
+
+export const getTrainingSheetsByStudent = async (studentKeycloakId: string) => {
+  try {
+    const response = await axiosInstance.get(`/training-sheets?studentKeycloakId=${studentKeycloakId}`);
+
+    if (response.status !== 200) {
+      throw new Error("Erro ao buscar as fichas de treino para o estudante");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar as fichas de treino do estudante:", error);
+    throw error;
+  }
+};
