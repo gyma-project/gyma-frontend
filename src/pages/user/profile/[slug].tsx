@@ -17,7 +17,7 @@ export default function Profile({ slug }: ProfileProps) {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setLoading(true); // Define o estado de carregamento como true
+    setLoading(true);
     getUUIDbyUsername(slug)
       .then((uuid) => {
         console.log('UUID:', uuid);
@@ -30,7 +30,7 @@ export default function Profile({ slug }: ProfileProps) {
         console.error('Erro ao obter o UUID ou perfil:', error);
       })
       .finally(() => {
-        setLoading(false); // Finaliza o estado de carregamento
+        setLoading(false);
       });
   }, [slug]);
 
