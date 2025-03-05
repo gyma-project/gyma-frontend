@@ -2,14 +2,19 @@ import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import PageTitle from "@/components/atoms/PageTitle";
 import Select from "@/components/atoms/Select";
+import ImageField from "@/components/atoms/ImageField";
 import { createKeycloakUser, getUUIDbyUsername } from "@/service/api/keycloak";
 import { createProfile, ProfileData } from "@/service/api/profiles";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
+import uploadImageToMinIO from "@/service/minio"; 
+import { useState } from "react";
 
 export default function CreateUser() {
   const { register, handleSubmit, reset } = useForm();
   const session = useSession();
+
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const onSubmit = async (data: any) => {
     if (!session.data || !session.data.user?.uuid) {
@@ -17,7 +22,7 @@ export default function CreateUser() {
       return;
     }
 
-    // Dados para criar o usuário no Keycloak
+    // Criar usuário - Keycloak
     const keycloakUserData = {
       username: data.firstName.toLowerCase() + Math.round(Math.random() * 1000),
       email: data.email,
@@ -27,7 +32,6 @@ export default function CreateUser() {
       userType: data.userType,
     };
 
-    // Criação do usuário no Keycloak
     try {
       await createKeycloakUser(keycloakUserData);
     } catch {
@@ -35,13 +39,22 @@ export default function CreateUser() {
       return;
     }
 
-    // Obter o UUID do usuário do Keycloak
+    // Obter token do usuário criado - keycloak
     const createUserUUID = await getUUIDbyUsername(keycloakUserData.username);
 
-    console.log("IDD", createUserUUID);
+    // Salvar imagem de perfil - minio
+    let imageUrl = "";
+    if (selectedImage) {
+      try {
+        imageUrl = await uploadImageToMinIO(selectedImage, createUserUUID);
+      } catch (error) {
+        console.error("Erro ao enviar a imagem para o MinIO:", error);
+        alert("Erro ao enviar imagem para o MinIO");
+        return;
+      }
+    }
 
-    // Criação de perfil no spring
-
+    // Criar perfil - backend
     const dictUserType: typeof data.userType = {
       ADMIN: 1,
       TRAINER: 2,
@@ -54,7 +67,7 @@ export default function CreateUser() {
       firstName: data.firstName,
       lastName: data.lastName,
       keycloakUserId: createUserUUID,
-      imageUrl: "",
+      imageUrl: imageUrl,
       roleIds: [dictUserType[data.userType]],
     };
 
@@ -63,6 +76,7 @@ export default function CreateUser() {
     if (newProfile) {
       alert("Perfil criado com sucesso!");
       reset();
+      setSelectedImage(null);
     } else {
       alert("Erro ao criar o perfil");
     }
@@ -72,6 +86,11 @@ export default function CreateUser() {
     <div>
       <PageTitle>Cadastrar Usuário</PageTitle>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <ImageField
+          accept="image/jpg"
+          onImageSelect={(file) => setSelectedImage(file)}
+        />
+
         <Input
           label="Nome"
           {...register("firstName", { required: "O nome é obrigatório" })}

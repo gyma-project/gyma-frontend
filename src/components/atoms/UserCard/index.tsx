@@ -8,7 +8,7 @@ interface UserCardProps {
 export default function UserCard({ userName, userImage }: UserCardProps) {
   return (
     <div className="h-[150px] shadow-lg rounded-2xl bg-gradient-to-r from-red-500 to-red-900 flex items-center p-5 gap-3 relative md:h-[278px] md:flex-col md:justify-center">
-      <div className="relative w-20 h-20 md:w-32 md:h-32 bg-red-950 rounded-full overflow-hidden">
+      <div className="relative w-20 h-20 md:w-32 md:h-32 z-10 bg-red-950 rounded-full overflow-hidden">
         <Image src={userImage} alt="" layout="fill" />
       </div>
       <p className="text-[24px] text-white z-10">{userName}</p>
