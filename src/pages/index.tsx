@@ -1,15 +1,31 @@
-import TransactionComponent from "@/components/atoms/TransactionComponent";
 import UserCard from "@/components/atoms/UserCard";
 import MenuList from "@/components/molecules/MenuList";
-import {
-  NAVLIST_financas,
-  NAVLIST_treinos,
-  NAVLIST_usuarios,
-} from "@/data/menus";
+import { NAVLIST_financas, NAVLIST_treinos, NAVLIST_usuarios } from "@/data/menus";
 import { signIn, useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const session = useSession();
+  const [userImage, setUserImage] = useState<string>(
+    "https://avatar.iran.liara.run/public"
+  );
+
+  useEffect(() => {
+    if (session.data?.user?.uuid) {
+      const minioImageUrl = `http://localhost:9000/images/${session.data.user.uuid}.jpg`;
+      fetch(minioImageUrl, { method: "HEAD" })
+        .then((response) => {
+          if (response.ok) {
+            setUserImage(minioImageUrl);
+          }
+        })
+        .catch(() => {
+          setUserImage(
+            `https://avatar.iran.liara.run/username?username=${session.data.user?.name}`
+          );
+        });
+    }
+  }, [session]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -19,14 +35,9 @@ export default function Home() {
             ? (session.data.user?.name as string)
             : "Bem vindo ao GYMA!"
         }
-        userImage={
-          session.data?.user
-            ? "https://avatar.iran.liara.run/username?username=" +
-              session.data.user?.name
-            : "https://avatar.iran.liara.run/public"
-        }
+        userImage={userImage}
       />
-      {session.status == "authenticated" ? (
+      {session.status === "authenticated" ? (
         <>
           <MenuList title="Gerência de usuários" list={NAVLIST_usuarios} />
           <MenuList title="Gerência de treinos" list={NAVLIST_treinos} />
@@ -39,7 +50,7 @@ export default function Home() {
           </p>
           <button
             onClick={() => signIn("keycloak")}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg  w-full md:w-72"
+            className="bg-red-500 text-white px-4 py-2 rounded-lg w-full md:w-72"
           >
             Fazer login
           </button>

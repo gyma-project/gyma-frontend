@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   images: {
-    domains: ["avatar.iran.liara.run"],
+    domains: ["avatar.iran.liara.run", "localhost"],
   },
 };
 
