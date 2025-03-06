@@ -1,5 +1,7 @@
 describe('Criação de Usuário com Login', () => {
     it('Deve acessar a página de criação de usuário após fazer login e criar um perfil', () => {
+        cy.intercept('HEAD', 'http://localhost:9000/images/*', { statusCode: 200 });
+
         cy.visit('http://localhost:3000');
 
         cy.get('button').contains('Entrar').click();

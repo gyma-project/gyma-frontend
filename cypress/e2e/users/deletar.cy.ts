@@ -2,6 +2,8 @@ describe('Criação de Usuário', () => {
 
     it('Deve acessar a página de listagem de usuários, pesquisar por um usuário e deletar o perfil', () => {
 
+        cy.intercept('HEAD', 'http://localhost:9000/images/*', { statusCode: 200 });
+
         cy.visit('http://localhost:3000');
 
         cy.get('button').contains('Entrar').click();
