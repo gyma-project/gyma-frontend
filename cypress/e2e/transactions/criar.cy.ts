@@ -1,5 +1,7 @@
 describe('Cadastro de Transação com Login', () => {
   beforeEach(() => {
+    cy.intercept('HEAD', 'http://localhost:9000/images/*', { statusCode: 200 });
+
     cy.visit('http://localhost:3000');
 
     cy.get('button').contains('Entrar').click();
@@ -18,13 +20,15 @@ describe('Cadastro de Transação com Login', () => {
     cy.contains('span', 'Cadastrar Transação').click({ force: true });
     cy.url().should('include', '/transactions/create');
 
-    cy.get('input[placeholder="Digite o valor da transação..."]').clear().type('100');
+    cy.get('input[placeholder="Digite o valor da transação..."]').clear().type('55');
 
     cy.get('select').select('SALARIES');
 
     cy.get('textarea[placeholder="Digite a descrição da transação..."]').clear().type('Pagamento de salário');
 
     cy.get('button[type="submit"]').click();
+
+    cy.wait(4000);
 
   });
 });

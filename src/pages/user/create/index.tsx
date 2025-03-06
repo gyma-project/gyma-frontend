@@ -8,6 +8,8 @@ import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import uploadImageToMinIO from "@/service/minio"; 
 import { useState } from "react";
+import ImageField from "@/components/atoms/ImageField";
+
 
 export default function CreateUser() {
   const { register, handleSubmit, reset } = useForm();

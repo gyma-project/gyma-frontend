@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
 import FiltrarPorNome from "../FiltrarPorNome";
-<<<<<<< HEAD
-import { getTrainingSheets, deleteTrainingSheet } from "@/service/api/training-sheets";
-import axiosInstance from "@/service/axios";
-import Image from "next/image";
-=======
 import { getAllTrainingSheets, deleteTrainingSheet, getTrainingSheetsByStudent } from "@/service/api/training";
 import axiosInstance from "@/service/axios";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { useRouter } from 'next/router'; 
-
->>>>>>> develop
+import { useRouter } from 'next/router';
 
 interface Role {
     id: number;
@@ -63,18 +56,6 @@ export default function TrainingSheetCard() {
     const [showViewModal, setShowViewModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedSheet, setSelectedSheet] = useState<TrainingSheet | null>(null);
-<<<<<<< HEAD
-
-    useEffect(() => {
-        const fetchTrainingSheets = async () => {
-            const data = await getTrainingSheets();
-            if (data) {
-                setTrainingSheets(data);
-            }
-        };
-        fetchTrainingSheets();
-    }, []);
-=======
     const { data: session } = useSession();
     const router = useRouter();
 
@@ -104,9 +85,6 @@ export default function TrainingSheetCard() {
         fetchTrainingSheets();
     }, [session, isStudent]);
 
-      
-    
->>>>>>> develop
 
     const confirmDelete = (sheet: TrainingSheet) => {
         setSelectedSheet(sheet);
@@ -115,11 +93,7 @@ export default function TrainingSheetCard() {
 
     const handleDelete = async () => {
         if (selectedSheet) {
-<<<<<<< HEAD
-            const success = await deleteTrainingSheet(selectedSheet.id);
-=======
             const success = await deleteTrainingSheet(selectedSheet.id.toString()); // Converte ID para string
->>>>>>> develop
             if (success) {
                 setTrainingSheets((prev) => prev.filter((sheet) => sheet.id !== selectedSheet.id));
             }
@@ -127,13 +101,6 @@ export default function TrainingSheetCard() {
         setShowDeleteModal(false);
         setSelectedSheet(null);
     };
-<<<<<<< HEAD
-=======
-    
-
-    
->>>>>>> develop
-
     const openViewModal = (sheet: TrainingSheet) => {
         setSelectedSheet(sheet);
         setShowViewModal(true);
@@ -156,22 +123,14 @@ export default function TrainingSheetCard() {
 
     const handleEdit = async () => {
         if (selectedSheet) {
-<<<<<<< HEAD
-            const updatedSheet = { ...selectedSheet, name: "Novo Nome" }; // Exemplo de atualização
-            const success = await updateTrainingSheet(updatedSheet.id, updatedSheet); // Passando id e dados
-=======
+
             const updatedSheet = { ...selectedSheet, name: "Novo Nome" };
             const success = await updateTrainingSheet(updatedSheet.id, updatedSheet); // Converte ID para string
->>>>>>> develop
             if (success) {
                 setTrainingSheets((prev) =>
                     prev.map((sheet) => (sheet.id === updatedSheet.id ? updatedSheet : sheet))
                 );
-<<<<<<< HEAD
-                setSelectedSheet(updatedSheet); // Atualizando diretamente o selectedSheet
-=======
                 setSelectedSheet(updatedSheet);
->>>>>>> develop
             }
         }
         setShowEditModal(false);
@@ -184,9 +143,6 @@ export default function TrainingSheetCard() {
             .toLowerCase()
             .includes(search.toLowerCase())
     );
-
-<<<<<<< HEAD
-=======
     const handleEditRedirect = (sheet: TrainingSheet) => {
         router.push(`/training/${sheet.id}/update`); // Redireciona para a página de atualização
     };
@@ -195,15 +151,11 @@ export default function TrainingSheetCard() {
         router.push('/training/create'); // Adiciona a navegação para a página de criação
     };
 
->>>>>>> develop
     return (
         <div className="p-6 min-h-screen">
             <div className="mb-6">
                 <FiltrarPorNome search={search} setSearch={setSearch} />
             </div>
-
-<<<<<<< HEAD
-=======
             <div className="mb-6">
                 <button
                     onClick={handleCreateRedirect}
@@ -211,9 +163,8 @@ export default function TrainingSheetCard() {
                 >
                     Criar Novo Treino
                 </button>
-            </div>  
+            </div>
 
->>>>>>> develop
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredTrainingSheets.map((sheet) => (
                     <div
@@ -239,38 +190,16 @@ export default function TrainingSheetCard() {
 
                         <div className="flex-1 max-w-[240px]">
                             <h2 className="text-lg font-semibold text-red-500">{sheet.name}</h2>
-<<<<<<< HEAD
-                            <p>Descrição:{sheet.description}</p>
-=======
                             <p>{sheet.description}</p>
->>>>>>> develop
-                        </div>
+                        </div >
 
                         <div className="mt-4 flex flex-col space-y-5">
                             <img
-<<<<<<< HEAD
-                                src="/icons/olho.png"
-=======
                                 src="/icons/icon-eye.svg"
->>>>>>> develop
                                 alt="Visualizar"
                                 className="w-5 h-5 cursor-pointer"
                                 onClick={() => openViewModal(sheet)}
                             />
-<<<<<<< HEAD
-                            <img
-                                src="/icons/lapis.png"
-                                alt="Editar"
-                                className="w-5 h-5 cursor-pointer"
-                                onClick={() => openEditModal(sheet)}
-                            />
-                            <img
-                                src="/icons/lixeira.png"
-                                alt="Excluir"
-                                className="w-5 h-5 cursor-pointer"
-                                onClick={() => confirmDelete(sheet)}
-                            />
-=======
                             {!isStudent && (
                                 <>
                                     <img
@@ -287,116 +216,117 @@ export default function TrainingSheetCard() {
                                     />
                                 </>
                             )}
->>>>>>> develop
-                        </div>
-                    </div>
-                ))}
+                        </div >
+                    </div >
+                ))
+}
+            </div >
+
+    {/* Modal de Visualização */ }
+{
+    showViewModal && selectedSheet && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                <div className="flex flex-col items-start space-y-3">
+                    <h2 className="text-lg font-bold">{selectedSheet.name}</h2>
+                    <p>
+                        <strong>Aluno: </strong>{selectedSheet.student.firstName} {selectedSheet.student.lastName}
+                    </p>
+                    <p>
+                        <strong>Treinador: </strong>{selectedSheet.trainer.firstName} {selectedSheet.trainer.lastName}
+                    </p>
+                    <p>
+                        <strong>Criado em: </strong>{new Date(selectedSheet.createdAt).toLocaleDateString()}
+                    </p>
+                    <p>
+                        <strong>Atualizado em: </strong>{new Date(selectedSheet.updatedAt).toLocaleDateString()}
+                    </p>
+                    <p>
+                        <strong>Atualizado por: </strong>{selectedSheet.updateBy.firstName} {selectedSheet.updateBy.lastName}
+                    </p>
+                    <h3 className="text-lg mt-9">Exercícios</h3>
+                    <ul>
+                        {selectedSheet?.exercises?.length ? (
+                            selectedSheet.exercises.map((exercise: Exercise) => (
+                                <li key={exercise.id}>
+                                    {exercise.name} - {exercise.muscleGroup} ({exercise.amount}x{exercise.repetition})
+                                </li>
+                            ))
+                        ) : (
+                            <li>Nenhum exercício disponível</li>
+                        )}
+                    </ul>
+
+                </div>
+                <button
+                    onClick={() => setShowViewModal(false)}
+                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                >
+                    Fechar
+                </button>
             </div>
-
-            {/* Modal de Visualização */}
-            {showViewModal && selectedSheet && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <div className="flex flex-col items-start space-y-3">
-                            <h2 className="text-lg font-bold">{selectedSheet.name}</h2>
-                            <p>
-                                <strong>Aluno: </strong>{selectedSheet.student.firstName} {selectedSheet.student.lastName}
-                            </p>
-                            <p>
-                                <strong>Treinador: </strong>{selectedSheet.trainer.firstName} {selectedSheet.trainer.lastName}
-                            </p>
-                            <p>
-                                <strong>Criado em: </strong>{new Date(selectedSheet.createdAt).toLocaleDateString()}
-                            </p>
-                            <p>
-                                <strong>Atualizado em: </strong>{new Date(selectedSheet.updatedAt).toLocaleDateString()}
-                            </p>
-                            <p>
-                                <strong>Atualizado por: </strong>{selectedSheet.updateBy.firstName} {selectedSheet.updateBy.lastName}
-                            </p>
-                            <h3 className="text-lg mt-9">Exercícios</h3>
-                            <ul>
-                                {selectedSheet?.exercises?.length ? (
-                                    selectedSheet.exercises.map((exercise: Exercise) => (
-                                        <li key={exercise.id}>
-                                            {exercise.name} - {exercise.muscleGroup} ({exercise.amount}x{exercise.repetition})
-                                        </li>
-                                    ))
-                                ) : (
-                                    <li>Nenhum exercício disponível</li>
-                                )}
-                            </ul>
-
-                        </div>
-                        <button
-                            onClick={() => setShowViewModal(false)}
-                            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                        >
-                            Fechar
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* Modal de Confirmação de Exclusão */}
-            {showDeleteModal && selectedSheet && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <h2 className="text-lg font-semibold">Deseja apagar este treino?</h2>
-                        <p className="text-gray-600 mt-2">{selectedSheet.name}</p>
-                        <div className="mt-4 flex justify-center space-x-4">
-                            <button
-                                onClick={() => setShowDeleteModal(false)}
-                                className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                            >
-                                Confirmar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Modal de Edição */}
-            {showEditModal && selectedSheet && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <h2 className="text-lg font-semibold">Editar Treino</h2>
-                        <div className="mt-4">
-                            <input
-                                type="text"
-                                value={selectedSheet.name}
-                                onChange={(e) => setSelectedSheet({ ...selectedSheet, name: e.target.value })}
-                                className="border border-gray-300 p-2 rounded-md"
-                            />
-                        </div>
-                        <div className="mt-4 flex justify-center space-x-4">
-                            <button
-                                onClick={() => setShowEditModal(false)}
-                                className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handleEdit}
-                                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                            >
-                                Salvar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
-    );
-<<<<<<< HEAD
+    )
 }
 
-=======
+{/* Modal de Confirmação de Exclusão */ }
+{
+    showDeleteModal && selectedSheet && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h2 className="text-lg font-semibold">Deseja apagar este treino?</h2>
+                <p className="text-gray-600 mt-2">{selectedSheet.name}</p>
+                <div className="mt-4 flex justify-center space-x-4">
+                    <button
+                        onClick={() => setShowDeleteModal(false)}
+                        className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        onClick={handleDelete}
+                        className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                    >
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
 }
->>>>>>> develop
+
+{/* Modal de Edição */ }
+{
+    showEditModal && selectedSheet && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h2 className="text-lg font-semibold">Editar Treino</h2>
+                <div className="mt-4">
+                    <input
+                        type="text"
+                        value={selectedSheet.name}
+                        onChange={(e) => setSelectedSheet({ ...selectedSheet, name: e.target.value })}
+                        className="border border-gray-300 p-2 rounded-md"
+                    />
+                </div>
+                <div className="mt-4 flex justify-center space-x-4">
+                    <button
+                        onClick={() => setShowEditModal(false)}
+                        className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        onClick={handleEdit}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                    >
+                        Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
+        </div >
+    );
+}

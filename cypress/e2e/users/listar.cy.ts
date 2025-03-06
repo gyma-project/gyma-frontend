@@ -2,6 +2,8 @@ describe('Criação de Usuário', () => {
 
     it('Deve acessar a página de listagem de usuários após fazer login e pesquisar por: usuário que não existe e que existe', () => {
 
+        cy.intercept('HEAD', 'http://localhost:9000/images/*', { statusCode: 200 });
+
         cy.visit('http://localhost:3000');
 
         cy.get('button').contains('Entrar').click();
@@ -33,6 +35,9 @@ describe('Criação de Usuário', () => {
         // Limpar o campo de busca antes de digitar o novo nome
         cy.get('input[placeholder="Buscar pelo nome..."]').clear();
         cy.get('input[placeholder="Buscar pelo nome..."]').type(name);
+        cy.wait(3000);
+        cy.get('input[placeholder="Buscar pelo nome..."]').clear();
+
 
     });
 });

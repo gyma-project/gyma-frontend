@@ -1,5 +1,7 @@
 describe('Histórico de Transações', () => {
     beforeEach(() => {
+        cy.intercept('HEAD', 'http://localhost:9000/images/*', { statusCode: 200 });
+
         cy.visit('http://localhost:3000');
 
         cy.get('button').contains('Entrar').click();
@@ -18,9 +20,11 @@ describe('Histórico de Transações', () => {
 
         cy.contains('span', 'Histórico das Transações').click();
 
-        cy.wait(2000);
+        cy.wait(4000);
 
         cy.get('input[type="date"]').type('2023-02-10');
+
+        cy.wait(4000);
     });
     
     it('Deve encontrar uma transação com data não existente', () => {
