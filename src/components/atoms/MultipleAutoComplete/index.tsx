@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getProfiles, Role } from "@/service/api/profiles";
-import { getExercises, Exercise } from "@/service/api/exercises"; // Serviço de exercícios
+import { getExercises, Exercise } from "@/service/api/exercises"; 
 import { useSession } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";

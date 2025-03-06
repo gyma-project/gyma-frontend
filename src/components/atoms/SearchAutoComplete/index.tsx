@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { getProfiles, Role } from "@/service/api/profiles"; // Serviço de perfis
+import { getProfiles, Role } from "@/service/api/profiles";
 import { useSession } from "next-auth/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
-import { getExercises, Exercise } from "@/service/api/exercises";
 
 
 
@@ -20,7 +19,7 @@ interface SearchAutoCompleteProps {
   label: string;
   name: string;
   onChange: (value: string) => void;
-  role?: Role; // Role pode ser passado como parâmetro opcional
+  role?: Role;
 }
 
 const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
@@ -33,19 +32,16 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null); // Estado para o usuário selecionado
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  // Função para buscar os usuários no backend
   const fetchUsers = async (query: string) => {
     setIsLoading(true);
 
     try {
       if (session?.accessToken) {
-        // Agora passamos `query` como `username`
         const usersData = await getProfiles(role, query);
         console.log('usersData:', usersData);
 
-        // Verifica se o resultado é um array
         if (Array.isArray(usersData?.content)) {
           const filteredUsers = usersData.content.map((user: any) => ({
             id: user.id.toString(),
@@ -74,21 +70,19 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
     }
   };
 
-  // Efeito para buscar os usuários conforme a query de pesquisa
   useEffect(() => {
     if (searchQuery.length > 2) {
       fetchUsers(searchQuery);
     } else {
-      setUsers([]); // Limpa a lista se a query for menor que 3 caracteres
+      setUsers([]);
     }
   }, [searchQuery, role]);
 
-  // Função para limpar a seleção
   const clearSelection = () => {
     setSelectedUser(null);
-    setSearchQuery(""); // Limpa o input
-    setUsers([]); // Limpa os usuários
-    onChange(""); // Informa o componente pai que não há mais seleção
+    setSearchQuery(""); 
+    setUsers([]); 
+    onChange(""); 
   };
 
   return (
@@ -102,11 +96,10 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
           value={selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName}` : searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Buscar usuário..."
-          className="w-full border border-red-500 text-sm rounded-xl py-2 px-5 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" // Estilo adaptado
+          className="w-full border border-red-500 text-sm rounded-xl py-2 px-5 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" 
         />
         {isLoading && <span className="loading-indicator">Carregando...</span>}
 
-        {/* Exibe o "X" para limpar o campo */}
         {selectedUser && (
           <span
             className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
@@ -117,7 +110,6 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
         )}
       </div>
 
-      {/* Exibe os resultados de busca abaixo do input */}
       {searchQuery.length > 2 && !selectedUser && (
         <div
           id="unit-complete-results"
@@ -129,8 +121,8 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
                 key={user.id}
                 className="br-item px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
                 onClick={() => {
-                  setSelectedUser(user); // Define o usuário selecionado
-                  onChange(user.keycloakUserId); // Passa o keycloakUserId para o componente pai
+                  setSelectedUser(user); 
+                  onChange(user.keycloakUserId);
                 }}
               >
                 <div className="br-radio flex items-center gap-2">
@@ -138,7 +130,7 @@ const SearchAutoComplete: React.FC<SearchAutoCompleteProps> = ({
                     id={`user-${user.id}`}
                     type="radio"
                     name="user"
-                    value={user.keycloakUserId} // Agora armazena o keycloakUserId
+                    value={user.keycloakUserId} 
                     className="hidden"
                   />
                   <label htmlFor={`user-${user.id}`} className="cursor-pointer">
