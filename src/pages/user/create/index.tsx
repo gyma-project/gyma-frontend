@@ -5,19 +5,15 @@ import Select from "@/components/atoms/Select";
 import { createKeycloakUser, getUUIDbyUsername } from "@/service/api/keycloak";
 import { createProfile, ProfileData } from "@/service/api/profiles";
 import { useSession } from "next-auth/react";
-import uploadImageToMinIO from "@/service/minio";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import uploadImageToMinIO from "@/service/minio"; 
+import { useState } from "react";
 
 export default function CreateUser() {
   const { register, handleSubmit, reset } = useForm();
   const session = useSession();
-  const [image, setImage] = useState<File | null>(null);
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null;
-    setImage(file);
-  };
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const onSubmit = async (data: any) => {
     if (!session.data || !session.data.user?.uuid) {
@@ -47,9 +43,9 @@ export default function CreateUser() {
 
     // Salvar imagem de perfil - minio (se houver imagem)
     let imageUrl = "";
-    if (image) {
+    if (selectedImage) {
       try {
-        imageUrl = await uploadImageToMinIO(image, createUserUUID);
+        imageUrl = await uploadImageToMinIO(selectedImage, createUserUUID);
       } catch (error) {
         console.error("Erro ao enviar a imagem para o MinIO:", error);
         alert("Erro ao enviar imagem para o MinIO");
@@ -79,6 +75,7 @@ export default function CreateUser() {
     if (newProfile) {
       alert("Perfil criado com sucesso!");
       reset();
+      setSelectedImage(null);
     } else {
       alert("Erro ao criar o perfil");
     }
@@ -88,20 +85,11 @@ export default function CreateUser() {
     <div>
       <PageTitle>Cadastrar Usuário</PageTitle>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        {/* Input de imagem */}
-        <div>
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-            Imagem de Perfil
-          </label>
-          <input
-            type="file"
-            id="image"
-            accept="image/jpg, image/jpeg, image/png"
-            onChange={handleImageChange}
-            className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
-        
+        <ImageField
+          accept="image/jpg"
+          onImageSelect={(file) => setSelectedImage(file)}
+        />
+
         <Input
           label="Nome"
           {...register("firstName", { required: "O nome é obrigatório" })}

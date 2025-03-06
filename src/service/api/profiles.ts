@@ -64,3 +64,18 @@ export const getProfiles = async (role?: Role, username?: string) => {
     return [];
   }
 };
+
+export const getProfileByUsername = async (username: string) => {
+  try {
+    const response = await axiosInstance.get(`/profiles?username=${username}`);
+
+    if (response.status !== 200 && response.status !== 201) {
+      throw new Error("Erro ao buscar perfil");
+    }
+
+    return response.data.content[0];
+  } catch (error) {
+    console.error("Erro:", error);
+    return [];
+  }
+};

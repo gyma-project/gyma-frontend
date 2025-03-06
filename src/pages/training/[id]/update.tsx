@@ -3,7 +3,7 @@ import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import PageTitle from "@/components/atoms/PageTitle";
 import Textbox from "@/components/atoms/Textbox";
-import { getTrainingSession, updateTrainingSession } from "@/service/api/training";
+import { getTrainingSheet, updateTrainingSheet } from "@/service/api/training";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -22,7 +22,7 @@ export default function TrainingEdit() {
   useEffect(() => {
     if (id) {
       // Carrega os dados da ficha de treino
-      getTrainingSession(id as string).then((data) => {
+      getTrainingSheet(id as string).then((data) => {
         setTraining(data);
         // Preenche os campos do formulário com os dados existentes
         setValue("name", data.name);
@@ -59,7 +59,7 @@ export default function TrainingEdit() {
     }
 
     try {
-      await updateTrainingSession(id as string, treinoData); // Atualiza a ficha de treino
+      await updateTrainingSheet(id as string, treinoData); // Atualiza a ficha de treino
       alert("Ficha de treino atualizada com sucesso!");
     } catch (error) {
       alert("Erro ao atualizar ficha de treino.");

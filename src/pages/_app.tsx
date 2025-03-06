@@ -12,14 +12,7 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session && session.status == "unauthenticated") {
-      router.replace("/");
-    }
-  }, [session]);
-
+  
   return (
     <SessionProvider session={session}>
       <div className="flex flex-col min-h-[100vh]">

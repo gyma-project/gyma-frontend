@@ -25,4 +25,8 @@ const FiltrarPorNome: React.FC<FiltrarPorNomeProps> = ({ search, setSearch }) =>
     );
 };
 
+<<<<<<< HEAD
 export default FiltrarPorNome;
+=======
+export default FiltrarPorNome;
+>>>>>>> develop
