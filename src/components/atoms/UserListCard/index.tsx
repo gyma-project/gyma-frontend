@@ -9,7 +9,7 @@ export default function UserListCard({ user }: any) {
         <img
           className="w-full h-full object-cover absolute"
           src={`https://avatar.iran.liara.run/username?username=${encodeURIComponent(
-            user?.name || "default"
+            user?.firstName + " " + user?.lastName
           )}`}
         />
       </div>

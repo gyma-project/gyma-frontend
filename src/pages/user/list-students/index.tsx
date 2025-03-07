@@ -6,16 +6,18 @@ import { getProfiles, Role } from "@/service/api/profiles";
 import { useEffect, useState } from "react";
 
 export default function ListStudents() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
+  // Requisição para a API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getProfiles(undefined, undefined, currentPage);
+        const res = await getProfiles(undefined, searchQuery, currentPage);
         setUsers(res.content);
         setTotalPages(res.totalPages);
         setTotalItems(res.totalElements);
@@ -25,7 +27,7 @@ export default function ListStudents() {
     };
 
     fetchData();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, searchQuery]);
 
   useEffect(() => {
     window.scrollTo({
@@ -49,18 +51,29 @@ export default function ListStudents() {
   return (
     <div>
       <PageTitle>Listagem de Alunos</PageTitle>
-      <SearchField placeholder="Digite o nome do aluno..." />
+      <SearchField
+        placeholder="Digite o nome do aluno..."
+        value={searchQuery}
+        onChange={(e) => {
+          setSearchQuery(e.target.value);
+          setCurrentPage(0);  // Resetar para a primeira página quando mudar a pesquisa
+        }}
+      />
       <div className="flex flex-wrap gap-4 mb-8 mt-4">
-        {users.map((user: any) => (
-          <UserListCard key={user.id} user={user} />
-        ))}
+        {users.length > 0 ? (
+          users.map((user: any) => (
+            <UserListCard key={user.id} user={user} />
+          ))
+        ) : (
+          <div className="w-full text-center">Nenhum aluno encontrado.</div>
+        )}
       </div>
 
       <div className="flex justify-between items-center border-t pt-4">
         <div>
           Exibindo {(currentPage * pageSize) + 1} - {Math.min((currentPage + 1) * pageSize, totalItems)} de {totalItems} alunos
         </div>
-        
+
         <div className="flex gap-2">
           <button
             onClick={handlePreviousPage}
@@ -69,11 +82,11 @@ export default function ListStudents() {
           >
             Anterior
           </button>
-          
+
           <span className="px-4 py-2">
             Página {currentPage + 1} de {totalPages}
           </span>
-          
+
           <button
             onClick={handleNextPage}
             disabled={currentPage >= totalPages - 1}
