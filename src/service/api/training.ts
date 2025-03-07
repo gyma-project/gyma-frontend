@@ -202,3 +202,21 @@ export const createTrainingRecord = async (
     throw error;
   }
 };
+
+export const getTrainingRecordForToday = async (studentKeycloakId: string) => {
+  try {
+    const today = new Date().toISOString().split("T")[0]; // Data formatada para YYYY-MM-DD
+    const response = await axiosInstance.get(`/training-records`, {
+      params: { studentId: studentKeycloakId, startDate: today, endDate: today }
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Erro ao buscar o agendamento de treino para hoje");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar o agendamento de treino para hoje:", error);
+    throw error;
+  }
+};

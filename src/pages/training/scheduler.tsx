@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PageTitle from "@/components/atoms/PageTitle";
-import { getTrainingTimesByDay, getTrainingRecordsByTime, toggleTrainingTimeActive } from "@/service/api/training";
+import { getTrainingTimesByDay, getTrainingRecordsByTime, toggleTrainingTimeActive, getTrainingRecordForToday } from "@/service/api/training";
 import { useSession } from "next-auth/react";
 
 interface TrainingTime {
@@ -21,6 +21,8 @@ export default function Scheduler() {
   const [loading, setLoading] = useState(true);
 
   const userRoles = session?.user?.profile?.roles.map((role: { name: string }) => role.name) || [];
+  const [userTrainingRecord, setUserTrainingRecord] = useState<TrainingTime | null>(null);
+  const studentKeycloakId = session?.user?.profile?.keycloakId;
 
   useEffect(() => {
     const fetchTrainingTimes = async () => {
@@ -50,6 +52,16 @@ export default function Scheduler() {
         }
 
         setTrainingTimes(sortedTrainingTimes); // Atualiza o estado após as requisições
+
+        // Verifica se o usuário tem um agendamento para hoje
+        if (studentKeycloakId) {
+          const userTraining = await getTrainingRecordForToday(studentKeycloakId);
+          if (userTraining?.content?.length > 0) {
+            const userTrainingTime = userTraining.content[0]; // Assume que o usuário tem apenas um treino agendado para hoje
+            setUserTrainingRecord(userTrainingTime);
+          }
+        }
+
       } catch (error) {
         console.error("Erro ao buscar os horários de treino", error);
       } finally {
@@ -58,7 +70,7 @@ export default function Scheduler() {
     };
 
     fetchTrainingTimes();
-  }, []);
+  }, [studentKeycloakId]);
 
   // Função para formatar os horários (de "06:00:00" para "06:00")
   const formatTime = (timeString: string) => {
@@ -81,7 +93,23 @@ export default function Scheduler() {
     }
   };
 
+  const handleCancelTraining = async () => {
+    if (!userTrainingRecord) return;
+    try {
+      // Chamar o API para cancelar o treino do usuário
+      // Supondo que exista uma função para isso: cancelTrainingRecord
+      // await cancelTrainingRecord(userTrainingRecord.id);
+
+      // Remove o treino do estado
+      setUserTrainingRecord(null);
+      alert("Treino cancelado com sucesso");
+    } catch (error) {
+      console.error("Erro ao cancelar o agendamento de treino", error);
+    }
+  };
+
   console.log(trainingTimes); // Para debugar o estado final
+  console.log(userTrainingRecord);
 
   return (
      <div className="min-h-screen">
@@ -100,17 +128,17 @@ export default function Scheduler() {
                   {formatTime(time.startTime)} às {formatTime(time.endTime)}
                 </h3>
                 <div className={`flex items-center ${time.active ? 'text-red-600' : 'text-gray-500'}`}>
-                  {/* Icone de pessoas ao lado da quantidade de vagas */}
+                  {/* Ícone de pessoas ao lado da quantidade de vagas */}
                   <img
                     src={time.active ? "/icons/icon-people.svg" : "/icons/icon-people-disable.svg"} // Caminho para o arquivo SVG
                     alt="Ícone de pessoas"
                     className="w-5 h-5 mr-2" // Ajuste o tamanho conforme necessário
                   />
                   <p className="text-sm">
-                    {time.trainingRecordsCount}/{time.studentsLimit} -{" "}
-                    {time.studentsLimit - (time.trainingRecordsCount || 0)} vagas restantes
+                    {time.trainingRecordsCount ?? 0} / {time.studentsLimit}
                   </p>
                 </div>
+
 
                 {time.trainer && (
                   <div className={`flex items-center mt-2 ${time.active ? 'text-gray-700' : 'text-gray-400'}`}>
@@ -130,29 +158,42 @@ export default function Scheduler() {
                     <img src={time.active ? "/icons/icon-eye.svg" : "/icons/icon-eye-disable.svg"} alt="Visualizar" className="w-6 h-6 hover:opacity-80" />
                   </button>
 
-                  {(userRoles.includes("ADMIN") || userRoles.includes("TRAINER")) && (
+                    {(userRoles.includes("ADMIN") || userRoles.includes("TRAINER")) && (
+                      <>
+                        <button className="flex items-center">
+                          <img src={time.active ? "/icons/icon-edit.svg" : "/icons/icon-edit-disable.svg"} alt="Editar" className="w-6 h-6 hover:opacity-80" />
+                        </button>
+                        <button
+                          onClick={() => handleToggleActive(time.id)}
+                          className="flex items-center"
+                        >
+                          <img src={time.active ? "/icons/icon-disable.svg" : "/icons/icon-disable-training.svg"} alt="Desativar" className="w-6 h-6 hover:opacity-80" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  {userRoles.includes("STUDENT") && (
                     <>
-                      <button className="flex items-center">
-                        <img src={time.active ? "/icons/icon-edit.svg" : "/icons/icon-edit-disable.svg"} alt="Editar" className="w-6 h-6 hover:opacity-80" />
-                      </button>
-                      <button
-                        onClick={() => handleToggleActive(time.id)}
-                        className="flex items-center"
-                      >
-                        <img src={time.active ? "/icons/icon-disable.svg" : "/icons/icon-disable-training.svg"} alt="Desativar" className="w-6 h-6 hover:opacity-80" />
-                      </button>
+                      {/* Verifica se o usuário já tem um agendamento para o horário e exibe o botão de cancelamento */}
+                      {userTrainingRecord && userTrainingRecord.id === time.id ? (
+                        <button
+                          onClick={handleCancelTraining}
+                          className="mt-3 w-full py-2 rounded-lg text-sm bg-gray-500 text-white hover:bg-gray-700"
+                        >
+                          Cancelar Agendamento
+                        </button>
+                      ) : (
+                        <button
+                          className={`mt-3 w-full py-2 rounded-lg text-sm ${time.active ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-gray-500 text-gray-300 cursor-not-allowed'}`}
+                          disabled={!time.active}
+                        >
+                          Agendar
+                        </button>
+                      )}
                     </>
                   )}
-                </div>
 
-                {userRoles.includes("STUDENT") && (
-                  <button
-                    className={`mt-3 w-full py-2 rounded-lg text-sm ${time.active ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-gray-500 text-gray-300 cursor-not-allowed'}`}
-                    disabled={!time.active}
-                  >
-                    Agendar
-                  </button>
-                )}
               </div>
             ))}
           </div>
