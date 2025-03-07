@@ -132,6 +132,7 @@ export const getTrainingTimesByDay = async (dayName: string) => {
   }
 };
 
+// Training Records
 export const getTrainingRecordsByTime = async (trainingTimeId: number, startDate: string, endDate: string) => {
   try {
     const response = await axiosInstance.get(`/training-records`, {
@@ -179,3 +180,25 @@ export const toggleTrainingTimeActive = async (id: string) => {
   }
 };
 
+export const createTrainingRecord = async (
+    trainingRecordData: { 
+      trainingTimeId: string;
+      studentKeycloakId: string;
+      trainerKeycloakId: string;
+      date: string;
+      updateBy: string 
+    }
+  ) => {
+  try {
+    const response = await axiosInstance.post("training-records", trainingRecordData);
+
+    if (response.status !== 200 && response.status !== 201) {
+      throw new Error("Erro ao criar o agendamento de treino");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao criar o agendamento de treino:", error);
+    throw error;
+  }
+};

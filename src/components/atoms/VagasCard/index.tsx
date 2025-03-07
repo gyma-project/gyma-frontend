@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import FiltroHorario from "../FiltroHorario";
-import { getTrainingTimesByDay, getTrainingRecordsByTime, updateTrainingTime, toggleTrainingTimeActive } from "@/service/api/training";
+import { 
+    getTrainingTimesByDay, 
+    getTrainingRecordsByTime, 
+    updateTrainingTime, 
+    toggleTrainingTimeActive, 
+    createTrainingRecord 
+} from "@/service/api/training";
 import SearchAutoComplete from "../SearchAutoComplete";
 import { Role } from "@/service/api/profiles";
 import { useSession } from "next-auth/react";
@@ -41,6 +47,11 @@ export default function ListaVagas() {
                     console.error("Resposta inesperada da API:", response);
                     return;
                 }
+
+                console.log("ui")
+                console.log(response)
+                console.log("ui")
+
     
                 const formattedVagas = await Promise.all(response.content.map(async (record: any) => {
                     const startTime = record.startTime.substring(0, 5); // Pega a parte do horário
@@ -58,7 +69,7 @@ export default function ListaVagas() {
                         vagasRestantes,
                         id: record.id,
                         active: record.active,
-                        trainerId: record.trainerId,
+                        trainerId: record.trainer.keycloakId,
                         studentsLimit: record.studentsLimit,
                         startTime, // Adiciona o startTime para facilitar a ordenação
                     };
@@ -122,6 +133,45 @@ export default function ListaVagas() {
         }
     };
 
+    const handleAgendar = async (vaga: VagasCardProps) => {
+        if (!session || !session.user) {
+            console.error("Usuário não autenticado");
+            return;
+        }
+    
+        const studentKeycloakId = session.user.uuid; // Ou use o ID correto do aluno no contexto de sessão
+        const { trainerId, id: trainingTimeId } = vaga;  // trainerId agora é o keycloakId do treinador
+        const updateBy = studentKeycloakId; // Ou pode ser um valor diferente, dependendo de como você deseja rastrear quem está agendando
+    
+        console.log(studentKeycloakId);
+        console.log(trainerId);
+        console.log(updateBy);
+
+
+        const trainingRecordData = {
+            trainingTimeId,         // ID do horário de treino
+            student: studentKeycloakId,  // ID do aluno
+            trainer: trainerId,     // keycloakId do treinador
+        };
+    
+        try {
+            const response = await createTrainingRecord(trainingRecordData);
+            console.log("Agendamento criado com sucesso:", response);
+    
+            // Atualize as vagas restantes
+            setVagas((prevVagas) => prevVagas.map((vaga) => {
+                if (vaga.id === trainingTimeId) {
+                    return { ...vaga, vagasRestantes: vaga.vagasRestantes - 1 };
+                }
+                return vaga;
+            }));
+        } catch (error) {
+            console.error("Erro ao agendar o treino:", error);
+        }
+    };
+    
+      
+
     return (
         <div className="flex flex-col space-y-4">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -151,6 +201,7 @@ export default function ListaVagas() {
                         usuarioEhTrainer={usuarioEhTrainer} 
                         openModal={openModal} 
                         setVagas={setVagas} 
+                        handleAgendar={handleAgendar} // Aqui está passando handleAgendar
                     />
                 ))}
             </div>
@@ -209,6 +260,7 @@ interface VagasCardPropsWithAluno extends VagasCardProps {
     usuarioEhTrainer: boolean;
     openModal: (vaga: VagasCardProps) => void;
     setVagas: React.Dispatch<React.SetStateAction<VagasCardProps[]>>;
+    handleAgendar: (vaga: VagasCardProps) => void; // Certifique-se de que a função está aqui
 }
 
 function VagasCard({
@@ -223,19 +275,9 @@ function VagasCard({
     studentsLimit,
     setVagas,
     usuarioEhAdministrador,
-    usuarioEhTrainer
+    usuarioEhTrainer,
+    handleAgendar
 }: VagasCardPropsWithAluno) {
-
-    console.log("1")
-    console.log(usuarioEhAdministrador);
-    console.log("2")
-
-    console.log(usuarioEhAluno);
-    console.log("3")
-
-    console.log(usuarioEhTrainer);
-
-
     return (
         <div
             className={`bg-${active ? 'red-50' : 'gray-200'} rounded-xl shadow-lg w-full border-${active ? 'red-400' : 'gray-400'} p-3`}
@@ -302,10 +344,22 @@ function VagasCard({
             </div>
 
             {vagasRestantes > 0 && usuarioEhAluno && active && (
-                <button className="bg-red-500 text-white py-2 mt-2 hover:bg-red-600 rounded-xl transition w-full">
+                <button
+                onClick={() => handleAgendar({ 
+                    horario, 
+                    capacidadeTotal, 
+                    vagasRestantes, 
+                    id, 
+                    active, 
+                    trainerId,   // Certifique-se de que o trainerId está sendo passado aqui corretamente
+                    studentsLimit 
+                })} 
+                className="bg-red-500 text-white py-2 mt-2 hover:bg-red-600 rounded-xl transition w-full"
+                >
                     Agendar
                 </button>
             )}
+
         </div>
     );
 }
