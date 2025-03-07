@@ -9,7 +9,7 @@ export default function ListStudents() {
   const [users, setUsers] = useState([])
 
   useEffect(() => {
-    getProfiles().then((res) => {
+    getProfiles(undefined, undefined, 2).then((res) => {
     // getProfiles(Role.STUDENT).then((res) => {
       setUsers(res.content);
     });

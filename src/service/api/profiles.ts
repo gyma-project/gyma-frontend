@@ -43,12 +43,13 @@ export const createProfile = async (profileData: ProfileData) => {
 };
 
 
-export const getProfiles = async (role?: Role, username?: string) => {
+export const getProfiles = async (role?: Role, username?: string, pageNumber?: number) => {
   try {
-    const params: { roles?: string; username?: string } = {};
+    const params: { roles?: string; username?: string, pageNumber?: number } = {};
     
     if (role) params.roles = role;
     if (username) params.username = username;
+    if (pageNumber) params.pageNumber = pageNumber;
 
     const response = await axiosInstance.get("/profiles", { params });
 
