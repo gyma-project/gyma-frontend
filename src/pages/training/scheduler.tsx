@@ -68,7 +68,7 @@ export default function Scheduler() {
 
   const handleToggleActive = async (id: number) => {
     try {
-      const updatedTime = await toggleTrainingTimeActive(id.toString());
+      await toggleTrainingTimeActive(id.toString());
 
       // Atualiza o estado para refletir a mudança de "active"
       setTrainingTimes((prevTimes) =>
@@ -95,14 +95,14 @@ export default function Scheduler() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {trainingTimes.map((time) => (
-              <div key={time.id} className="p-4 border rounded-lg shadow-md bg-red-50">
-                <h3 className="text-lg font-semibold text-red-600">
+              <div key={time.id} className={`p-4 border rounded-lg shadow-md ${time.active ? 'bg-red-50' : 'bg-gray-300'}`}>
+                <h3 className={`text-lg font-semibold ${time.active ? 'text-red-600' : 'text-gray-600'}`}>
                   {formatTime(time.startTime)} às {formatTime(time.endTime)}
                 </h3>
-                <div className="flex items-center text-red-600">
+                <div className={`flex items-center ${time.active ? 'text-red-600' : 'text-gray-500'}`}>
                   {/* Icone de pessoas ao lado da quantidade de vagas */}
                   <img
-                    src="/icons/icon-people.svg" // Caminho para o arquivo SVG
+                    src={time.active ? "/icons/icon-people.svg" : "/icons/icon-people-disable.svg"} // Caminho para o arquivo SVG
                     alt="Ícone de pessoas"
                     className="w-5 h-5 mr-2" // Ajuste o tamanho conforme necessário
                   />
@@ -113,9 +113,9 @@ export default function Scheduler() {
                 </div>
 
                 {time.trainer && (
-                  <div className="flex items-center mt-2">
+                  <div className={`flex items-center mt-2 ${time.active ? 'text-gray-700' : 'text-gray-400'}`}>
                     <img
-                      src="/icons/icon-gym.svg"
+                      src={time.active ? "/icons/icon-gym.svg" : "/icons/icon-gym-disable.svg"}
                       alt="Ícone de academia"
                       className="w-5 h-5 mr-2"
                     />
@@ -127,26 +127,29 @@ export default function Scheduler() {
 
                 <div className="relative mt-4 flex flex-col items-end space-y-2">
                   <button className="flex items-center">
-                    <img src="/icons/icon-eye.svg" alt="Visualizar" className="w-6 h-6 hover:opacity-80" />
+                    <img src={time.active ? "/icons/icon-eye.svg" : "/icons/icon-eye-disable.svg"} alt="Visualizar" className="w-6 h-6 hover:opacity-80" />
                   </button>
 
                   {(userRoles.includes("ADMIN") || userRoles.includes("TRAINER")) && (
                     <>
                       <button className="flex items-center">
-                        <img src="/icons/icon-edit.svg" alt="Editar" className="w-6 h-6 hover:opacity-80" />
+                        <img src={time.active ? "/icons/icon-edit.svg" : "/icons/icon-edit-disable.svg"} alt="Editar" className="w-6 h-6 hover:opacity-80" />
                       </button>
                       <button
                         onClick={() => handleToggleActive(time.id)}
                         className="flex items-center"
                       >
-                        <img src="/icons/icon-disable.svg" alt="Desativar" className="w-6 h-6 hover:opacity-80" />
+                        <img src={time.active ? "/icons/icon-disable.svg" : "/icons/icon-disable-training.svg"} alt="Desativar" className="w-6 h-6 hover:opacity-80" />
                       </button>
                     </>
                   )}
                 </div>
 
                 {userRoles.includes("STUDENT") && (
-                  <button className="mt-3 w-full bg-red-500 text-white py-2 rounded-lg text-sm hover:bg-red-700">
+                  <button
+                    className={`mt-3 w-full py-2 rounded-lg text-sm ${time.active ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-gray-500 text-gray-300 cursor-not-allowed'}`}
+                    disabled={!time.active}
+                  >
                     Agendar
                   </button>
                 )}
