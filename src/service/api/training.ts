@@ -118,7 +118,7 @@ export const getTrainingRecords = async (date: Date) => {
 export const getTrainingTimesByDay = async (dayName: string) => {
   try {
       const response = await axiosInstance.get(`/training-times`, {
-          params: { dayName, size: 19 }
+          params: { dayName, size: 20 }
       });
 
       if (response.status !== 200) {
