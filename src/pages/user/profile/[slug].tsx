@@ -51,7 +51,7 @@ export default function Profile({ slug }: ProfileProps) {
 
   if (!profile) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-red-50">
+      <div className="flex justify-center items-center min-h-screen">
         <p className="text-red-600 font-bold text-xl">Perfil não encontrado.</p>
       </div>
     );

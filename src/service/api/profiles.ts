@@ -43,22 +43,21 @@ export const createProfile = async (profileData: ProfileData) => {
 };
 
 
-export const getProfiles = async (role?: Role, username?: string) => {
+export const getProfiles = async (role?: Role, username?: string, pageNumber?: number) => {
   try {
-    // Definindo os parâmetros corretamente antes da requisição
-    const params: { roles?: string; username?: string } = {};
+    const params: { roles?: string; username?: string, pageNumber?: number } = {};
     
     if (role) params.roles = role;
     if (username) params.username = username;
+    if (pageNumber) params.pageNumber = pageNumber;
 
-    // Agora chamamos a API com os parâmetros definidos
     const response = await axiosInstance.get("/profiles", { params });
 
     if (response.status !== 200) {
       throw new Error("Erro ao obter perfis");
     }
 
-    return response.data; // Retorna os perfis filtrados
+    return response.data;
   } catch (error) {
     console.error("Erro ao buscar perfis:", error);
     return [];
