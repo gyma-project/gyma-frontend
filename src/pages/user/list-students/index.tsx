@@ -1,4 +1,6 @@
+import Input from "@/components/atoms/Input";
 import PageTitle from "@/components/atoms/PageTitle";
+import SearchField from "@/components/atoms/SearchField";
 import UserListCard from "@/components/atoms/UserListCard";
 import { getProfiles, Role } from "@/service/api/profiles";
 import { useEffect, useState } from "react";
@@ -25,6 +27,13 @@ export default function ListStudents() {
     fetchData();
   }, [currentPage, pageSize]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, [currentPage]);
+
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
       setCurrentPage(currentPage + 1);
@@ -40,8 +49,8 @@ export default function ListStudents() {
   return (
     <div>
       <PageTitle>Listagem de Alunos</PageTitle>
-      
-      <div className="flex flex-wrap gap-4 mb-8">
+      <SearchField placeholder="Digite o nome do aluno..." />
+      <div className="flex flex-wrap gap-4 mb-8 mt-4">
         {users.map((user: any) => (
           <UserListCard key={user.id} user={user} />
         ))}
