@@ -17,7 +17,7 @@ export default function ListStudents() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getProfiles(undefined, searchQuery, currentPage);
+        const res = await getProfiles(Role.STUDENT, searchQuery, currentPage);
         setUsers(res.content);
         setTotalPages(res.totalPages);
         setTotalItems(res.totalElements);
