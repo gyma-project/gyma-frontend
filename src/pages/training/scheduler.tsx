@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import PageTitle from "@/components/atoms/PageTitle";
-import { getTrainingTimesByDay, getTrainingRecordsByTime, toggleTrainingTimeActive, getTrainingRecordForToday } from "@/service/api/training";
+import {
+  getTrainingTimesByDay,
+  getTrainingRecordsByTime,
+  toggleTrainingTimeActive,
+  getTrainingRecordForToday,
+  postTrainingRecords,
+  deleteTrainingRecords,
+} from "@/service/api/training";
 import { useSession } from "next-auth/react";
 
 interface TrainingTime {
@@ -9,11 +16,15 @@ interface TrainingTime {
   startTime: string;
   endTime: string;
   studentsLimit: number;
-  trainer?: { firstName: string; lastName: string; imageUrl: string | null, keycloakId: string};
-  trainingRecordsCount?: number; // Adiciona a contagem de registros
+  trainer?: {
+    firstName: string;
+    lastName: string;
+    imageUrl: string | null;
+    keycloakId: string;
+  };
+  trainingRecordsCount?: number;
   active: boolean;
 }
-
 
 export default function Scheduler() {
   const [trainingTimes, setTrainingTimes] = useState<TrainingTime[]>([]);
@@ -21,8 +32,9 @@ export default function Scheduler() {
   const [loading, setLoading] = useState(true);
 
   const userRoles = session?.user?.profile?.roles.map((role: { name: string }) => role.name) || [];
-  const [userTrainingRecord, setUserTrainingRecord] = useState<TrainingTime | null>(null);
   const studentKeycloakId = session?.user?.profile?.keycloakId;
+
+  const [userTrainingRecords, setUserTrainingRecords] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchTrainingTimes = async () => {
@@ -30,20 +42,17 @@ export default function Scheduler() {
         const todayEnum = new Date().toLocaleDateString("en-US", { weekday: "long" }).toUpperCase();
         const response = await getTrainingTimesByDay(todayEnum);
 
-        // Ordena os horários de treino pelo horário de início (startTime)
+        // @ts-ignore
         const sortedTrainingTimes = response.content?.sort((a, b) => {
           return a.startTime.localeCompare(b.startTime);
         }) || [];
 
-        // Buscar os registros de treino para cada horário
         for (let time of sortedTrainingTimes) {
-          const startDate = new Date().toISOString().split("T")[0]; // Data atual no formato "YYYY-MM-DD"
-          const endDate = startDate; // Considerando o mesmo dia para o intervalo
+          const startDate = new Date().toISOString().split("T")[0];
+          const endDate = startDate;
 
-          // Faz a requisição para obter os registros de treino para cada horário
           const recordsResponse = await getTrainingRecordsByTime(time.id, startDate, endDate);
-          
-          // Verifica se os registros foram recebidos e calcula a quantidade de registros
+
           if (recordsResponse?.content) {
             time.trainingRecordsCount = recordsResponse.content.length;
           } else {
@@ -51,17 +60,15 @@ export default function Scheduler() {
           }
         }
 
-        setTrainingTimes(sortedTrainingTimes); // Atualiza o estado após as requisições
+        setTrainingTimes(sortedTrainingTimes);
 
-        // Verifica se o usuário tem um agendamento para hoje
         if (studentKeycloakId) {
           const userTraining = await getTrainingRecordForToday(studentKeycloakId);
           if (userTraining?.content?.length > 0) {
-            const userTrainingTime = userTraining.content[0]; // Assume que o usuário tem apenas um treino agendado para hoje
-            setUserTrainingRecord(userTrainingTime);
+            const userTrainingIds = userTraining.content.map((record: any) => record.trainingTimeId);
+            setUserTrainingRecords(userTrainingIds);
           }
         }
-
       } catch (error) {
         console.error("Erro ao buscar os horários de treino", error);
       } finally {
@@ -72,7 +79,6 @@ export default function Scheduler() {
     fetchTrainingTimes();
   }, [studentKeycloakId]);
 
-  // Função para formatar os horários (de "06:00:00" para "06:00")
   const formatTime = (timeString: string) => {
     const [hour, minute] = timeString.split(":");
     return `${hour}:${minute}`;
@@ -82,7 +88,6 @@ export default function Scheduler() {
     try {
       await toggleTrainingTimeActive(id.toString());
 
-      // Atualiza o estado para refletir a mudança de "active"
       setTrainingTimes((prevTimes) =>
         prevTimes.map((time) =>
           time.id === id ? { ...time, active: !time.active } : time
@@ -93,26 +98,61 @@ export default function Scheduler() {
     }
   };
 
-  const handleCancelTraining = async () => {
-    if (!userTrainingRecord) return;
+  const handleCancelTraining = async (trainingTimeId: number) => {
     try {
-      // Chamar o API para cancelar o treino do usuário
-      // Supondo que exista uma função para isso: cancelTrainingRecord
-      // await cancelTrainingRecord(userTrainingRecord.id);
+      await deleteTrainingRecords(trainingTimeId);
 
-      // Remove o treino do estado
-      setUserTrainingRecord(null);
-      alert("Treino cancelado com sucesso");
+      const updatedTrainingTimes = trainingTimes.map((time) => {
+        if (time.id === trainingTimeId) {
+          return {
+            ...time,
+            trainingRecordsCount: Math.max((time.trainingRecordsCount ?? 0) - 1, 0),
+          };
+        }
+        return time;
+      });
+
+      setTrainingTimes(updatedTrainingTimes);
+      setUserTrainingRecords((prevRecords) => prevRecords.filter((id) => id !== trainingTimeId));
+
+      alert("Treino cancelado com sucesso!");
     } catch (error) {
-      console.error("Erro ao cancelar o agendamento de treino", error);
+      console.error("Erro ao cancelar o agendamento de treino:", error);
+      alert("Ocorreu um erro ao tentar cancelar o treino. Por favor, tente novamente.");
     }
   };
 
-  console.log(trainingTimes); // Para debugar o estado final
-  console.log(userTrainingRecord);
+  const handleScheduleTraining = async (trainingTimeId: number, trainerId: string) => {
+    if (!studentKeycloakId) {
+      alert("Você precisa estar logado como aluno para agendar um treino.");
+      return;
+    }
+
+    try {
+      await postTrainingRecords(studentKeycloakId, trainerId, trainingTimeId);
+
+      const updatedTrainingTimes = trainingTimes.map((time) => {
+        if (time.id === trainingTimeId) {
+          return {
+            ...time,
+            trainingRecordsCount: (time.trainingRecordsCount ?? 0) + 1,
+          };
+        }
+        return time;
+      });
+
+      setTrainingTimes(updatedTrainingTimes);
+      setUserTrainingRecords((prevRecords) => [...prevRecords, trainingTimeId]);
+
+      alert("Treino agendado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao agendar o treino:", error);
+      alert("Ocorreu um erro ao tentar agendar o treino. Por favor, tente novamente.");
+    }
+  };
 
   return (
-     <div className="min-h-screen">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:max-w-7xl lg:px-8">
         <PageTitle>Agendamento</PageTitle>
 
@@ -128,17 +168,15 @@ export default function Scheduler() {
                   {formatTime(time.startTime)} às {formatTime(time.endTime)}
                 </h3>
                 <div className={`flex items-center ${time.active ? 'text-red-600' : 'text-gray-500'}`}>
-                  {/* Ícone de pessoas ao lado da quantidade de vagas */}
                   <img
-                    src={time.active ? "/icons/icon-people.svg" : "/icons/icon-people-disable.svg"} // Caminho para o arquivo SVG
+                    src={time.active ? "/icons/icon-people.svg" : "/icons/icon-people-disable.svg"}
                     alt="Ícone de pessoas"
-                    className="w-5 h-5 mr-2" // Ajuste o tamanho conforme necessário
+                    className="w-5 h-5 mr-2"
                   />
                   <p className="text-sm">
                     {time.trainingRecordsCount ?? 0} / {time.studentsLimit}
                   </p>
                 </div>
-
 
                 {time.trainer && (
                   <div className={`flex items-center mt-2 ${time.active ? 'text-gray-700' : 'text-gray-400'}`}>
@@ -158,42 +196,41 @@ export default function Scheduler() {
                     <img src={time.active ? "/icons/icon-eye.svg" : "/icons/icon-eye-disable.svg"} alt="Visualizar" className="w-6 h-6 hover:opacity-80" />
                   </button>
 
-                    {(userRoles.includes("ADMIN") || userRoles.includes("TRAINER")) && (
-                      <>
-                        <button className="flex items-center">
-                          <img src={time.active ? "/icons/icon-edit.svg" : "/icons/icon-edit-disable.svg"} alt="Editar" className="w-6 h-6 hover:opacity-80" />
-                        </button>
-                        <button
-                          onClick={() => handleToggleActive(time.id)}
-                          className="flex items-center"
-                        >
-                          <img src={time.active ? "/icons/icon-disable.svg" : "/icons/icon-disable-training.svg"} alt="Desativar" className="w-6 h-6 hover:opacity-80" />
-                        </button>
-                      </>
-                    )}
-                  </div>
-
-                  {userRoles.includes("STUDENT") && (
+                  {(userRoles.includes("ADMIN") || userRoles.includes("TRAINER")) && (
                     <>
-                      {/* Verifica se o usuário já tem um agendamento para o horário e exibe o botão de cancelamento */}
-                      {userTrainingRecord && userTrainingRecord.id === time.id ? (
-                        <button
-                          onClick={handleCancelTraining}
-                          className="mt-3 w-full py-2 rounded-lg text-sm bg-gray-500 text-white hover:bg-gray-700"
-                        >
-                          Cancelar Agendamento
-                        </button>
-                      ) : (
-                        <button
-                          className={`mt-3 w-full py-2 rounded-lg text-sm ${time.active ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-gray-500 text-gray-300 cursor-not-allowed'}`}
-                          disabled={!time.active}
-                        >
-                          Agendar
-                        </button>
-                      )}
+                      <button className="flex items-center">
+                        <img src={time.active ? "/icons/icon-edit.svg" : "/icons/icon-edit-disable.svg"} alt="Editar" className="w-6 h-6 hover:opacity-80" />
+                      </button>
+                      <button
+                        onClick={() => handleToggleActive(time.id)}
+                        className="flex items-center"
+                      >
+                        <img src={time.active ? "/icons/icon-disable.svg" : "/icons/icon-disable-training.svg"} alt="Desativar" className="w-6 h-6 hover:opacity-80" />
+                      </button>
                     </>
                   )}
+                </div>
 
+                {userRoles.includes("STUDENT") && (
+                  <>
+                    {userTrainingRecords.includes(time.id) ? (
+                      <button
+                        onClick={() => handleCancelTraining(time.id)}
+                        className="mt-3 w-full py-2 rounded-lg text-sm bg-gray-500 text-white hover:bg-gray-700"
+                      >
+                        Cancelar Agendamento
+                      </button>
+                    ) : (
+                      <button
+                        className={`mt-3 w-full py-2 rounded-lg text-sm ${time.active ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-gray-500 text-gray-300 cursor-not-allowed'}`}
+                        disabled={!time.active}
+                        onClick={() => handleScheduleTraining(time.id, time.trainer?.keycloakId || "")}
+                      >
+                        Agendar
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             ))}
           </div>

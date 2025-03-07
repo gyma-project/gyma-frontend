@@ -115,6 +115,41 @@ export const getTrainingRecords = async (date: Date) => {
   }
 };
 
+
+export const postTrainingRecords = async (studentId: string, trainerId: string, trainingTimeId: number) => {
+  try {
+
+    const response = await axiosInstance.post(`/training-records`, {
+      "trainingTimeId": trainingTimeId,
+      "student": studentId,
+      "trainer": trainerId,
+    });
+
+    if (response.status !== 200 && response.status !== 201) {
+      throw new Error("Erro ao buscar os registros de treino");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar os registros de treino:", error);
+    throw error;
+  }
+};
+
+
+export const deleteTrainingRecords = async (id: number) => {
+  try {
+
+    const response = await axiosInstance.delete(`/training-records/${id}`); 
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar os registros de treino:", error);
+    throw error;
+  }
+};
+
+
 export const getTrainingTimesByDay = async (dayName: string) => {
   try {
       const response = await axiosInstance.get(`/training-times`, {

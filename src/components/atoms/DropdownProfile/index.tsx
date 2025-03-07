@@ -1,11 +1,13 @@
+// @ts-nocheck
 import { Session } from "@auth/core/types";
 import Image from "next/image";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 
 interface DropdownProfileProps {
   handleLogin: () => void;
   session: {
-    data: Session
+    data: Session;
   };
 }
 
@@ -14,6 +16,20 @@ export default function DropdownProfile({
   session,
 }: DropdownProfileProps) {
   const [isOpen, setOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState<string>(
+    `https://avatar.iran.liara.run/username?username=${session.data.user?.name}`
+  );
+
+  useEffect(() => {
+    //@ts-ignore
+    const minioImageUrl = `http://localhost:9000/images/${session.data.user?.uuid}.jpg`;
+    fetch(minioImageUrl, { method: "HEAD" })
+      .then((response) => response.ok && setProfileImage(minioImageUrl))
+      .catch(() => {});
+  }, [session.data.user?.id, session.data.user?.name]);
+
+
+  const router = useRouter();
 
   return (
     <div className="absolute right-6 flex items-center">
@@ -21,20 +37,20 @@ export default function DropdownProfile({
         className="text-red-500 flex items-center gap-2 cursor-pointer"
         onClick={() => setOpen(!isOpen)}
       >
-        <span>Olá, {session.data.user?.name ? session.data.user?.name.split(" ")[0] : "Usuário"}</span>
+        <span>
+          Olá, {session.data.user?.name ? session.data.user?.name.split(" ")[0] : "Usuário"}
+        </span>
         <span className="text-2xl">👋</span>
       </p>
       {isOpen && (
         <>
-          <div className="z-20 w-80 p-4 border border-red-500 shadow-lg rounded-lg absolute bg-white top-16 right-0 ">
+          <div className="z-20 w-80 p-4 border border-red-500 shadow-lg rounded-lg absolute bg-white top-16 right-0">
             <div className="flex items-center gap-4">
               <div className="bg-red-400 rounded-full h-12 w-12 relative">
                 <img
-                  src={
-                    "https://avatar.iran.liara.run/username?username=" +
-                    session.data.user?.name
-                  }
+                  src={profileImage}
                   alt="Imagem de perfil"
+                  className="rounded-full h-full w-full object-cover"
                 />
               </div>
               <div>
@@ -46,7 +62,7 @@ export default function DropdownProfile({
             </div>
             <hr className="mt-5 mb-3 bg-red" />
             <div className="flex flex-col">
-              <div className="py-3 px-1 flex items-center gap-2 cursor-pointer hover:bg-red-100 rounded-lg transition-all">
+              <div className="py-3 px-1 flex items-center gap-2 cursor-pointer hover:bg-red-100 rounded-lg transition-all" onClick={() => router.push(`/user/profile/${session.data.user?.username as string}`)}>
                 <Image
                   src="/icons/icon-user.svg"
                   alt="Icone de usuário"
